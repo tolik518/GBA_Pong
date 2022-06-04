@@ -1,0 +1,8 @@
+version: '3.5'
+services:
+  dkp_compiler:
+    image: ${CONTAINERNAME}:dev
+    container_name: ${CONTAINERNAME}
+    volumes:
+      - ./../../code:/${USER}
+      - ./../../out:/out

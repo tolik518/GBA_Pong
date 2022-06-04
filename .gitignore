@@ -1,0 +1,7 @@
+.vscode
+.idea
+code/build/
+code/include
+out/*.elf
+out/*.gba
+out/*.sav
