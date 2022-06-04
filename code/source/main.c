@@ -1,28 +1,30 @@
-#include <tonc.h>
-#include <tonc_video.h>
+#include <../include/tonc.h>
+#include <../include/tonc_video.h>
 
 #include "draw.h"
 
-typedef struct Paddle {
-	u8 x;
-	u8 y;
-	u8 h;
-	u8 w;
-} Paddle_t;
-
-typedef struct Ball {
-	u8 x;
-	u8 y;
-	u8 h;
-	u8 w;
-} Ball_t;
-
-void renderPlayer(Paddle_t p1)
+typedef struct paddle
 {
-	drawCubeXYHW(p1.x-1, p1.y-1, p1.h+2, p1.w+2, CLR_BLACK); //clearing the paddle outer pixels
-	drawCubeXYHW(p1.x+1, p1.y+1, p1.h-2, p1.w-2, CLR_BLACK); //clearing the paddle inner pixels
+	u8 x;
+	u8 y;
+	u8 h;
+	u8 w;
+} Paddle;
 
-	drawCubeXYHW(p1.x, p1.y, p1.h, p1.w, CLR_CYAN);
+typedef struct ball
+{
+	u8 x;
+	u8 y;
+	u8 h;
+	u8 w;
+} Ball;
+
+void renderPlayer(Paddle p1)
+{
+	drawRectXYHW(p1.x-1, p1.y-1, p1.h+2, p1.w+2, CLR_BLACK); //clearing the paddle outer pixels
+	drawRectXYHW(p1.x+1, p1.y+1, p1.h-2, p1.w-2, CLR_BLACK); //clearing the paddle inner pixels
+
+	drawRectXYHW(p1.x, p1.y, p1.h, p1.w, CLR_CYAN);
 }
 
 int main(void) 
@@ -32,8 +34,8 @@ int main(void)
 	int h = 30;
 	int w =  5;
 	
-	Paddle_t p1 = {SCREEN_HEIGHT/2-h/2, 5, h, w};
-	Paddle_t p2 = {SCREEN_HEIGHT/2-h/2, SCREEN_WIDTH-w-5, h, w};
+	Paddle p1 = {SCREEN_HEIGHT/2-h/2, 5, h, w};
+	Paddle p2 = {SCREEN_HEIGHT/2-h/2, SCREEN_WIDTH-w-5, h, w};
 
 	irq_init(NULL);
 	irq_add(II_VBLANK, NULL);
@@ -55,7 +57,8 @@ int main(void)
 				renderPlayer(p1);
 				renderPlayer(p2);
 			}
-		} 
+		}
+
 		if (key_is_down(KEY_UP)) 
 		{
 			if (p1.x > 0)
@@ -66,7 +69,9 @@ int main(void)
 				renderPlayer(p2);
 			}
 		}
-	}
 
+		drawCubeCentered(SCREEN_HEIGHT/2-1,SCREEN_WIDTH/2-1,10,CLR_RED);
+
+	}
 	return 1;
 }
