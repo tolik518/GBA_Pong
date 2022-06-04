@@ -4,9 +4,11 @@
 
 void drawline(u8 x0, u8 y0, u8 x1, u8 y1, int color) 
 {
-	if (x0 == x1){
+	if (x0 == x1)
+	{
 		m3_mem[x0][y1] = color;
-		while(true){
+		while (true)
+		{
 			if(y0<y1) m3_mem[x0][++y0] = color;
 			if(y0>y1) m3_mem[x0][++y1] = color;
 			if(y0 == y1) break;
@@ -14,9 +16,11 @@ void drawline(u8 x0, u8 y0, u8 x1, u8 y1, int color)
 		return;
 	}
 
-	if (y0 == y1){
+	if (y0 == y1)
+	{
 		m3_mem[x0][y1] = color;
-		while(true){
+		while (true)
+		{
 			if(x0<x1)
 				m3_mem[++x0][y0] = color;
 			if(x0>x1)
@@ -27,10 +31,10 @@ void drawline(u8 x0, u8 y0, u8 x1, u8 y1, int color)
 	}
 
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-	byte dx = diff(x0, x1);
-	int sx = x0 < x1 ? 1 : -1;
+	int dx = diff(x0, x1);
 	int dy = -diff(y0, y1);
-	int sy = y0 < y1 ? 1 : -1;
+	s8  sx = x0 < x1 ? 1 : -1;
+	s8  sy = y0 < y1 ? 1 : -1;
 	int error = dx + dy;
 
 	while(true)
@@ -80,5 +84,4 @@ void drawCubeXYHWfill(u8 x, u8 y, u8 h, u8 w, int color)
 			m3_mem[x+i][y+j] = color;
 		}
 	}
-	
 }
