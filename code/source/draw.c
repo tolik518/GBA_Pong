@@ -7,10 +7,8 @@ void drawline(u8 x0, u8 y0, u8 x1, u8 y1, int color)
 	if (x0 == x1){
 		m3_mem[x0][y1] = color;
 		while(true){
-			if(y0<y1)
-				m3_mem[x0][++y0] = color;
-			if(y0>y1)
-				m3_mem[x0][++y1] = color;
+			if(y0<y1) m3_mem[x0][++y0] = color;
+			if(y0>y1) m3_mem[x0][++y1] = color;
 			if(y0 == y1) break;
 		}
 		return;
