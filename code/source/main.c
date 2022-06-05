@@ -2,6 +2,7 @@
 #include <../include/tonc_video.h>
 
 #include "draw.h"
+#include "ball.h"
 
 typedef struct paddle
 {
@@ -11,14 +12,6 @@ typedef struct paddle
 	u8 w; //width
 } Paddle;
 
-typedef struct ball
-{
-	u8 x;
-	u8 y;
-	u8 h;   //height
-    u8 dir; //direction
-    COLOR color;
-} Ball;
 
 void renderPlayer(Paddle p)
 {
@@ -34,58 +27,6 @@ void renderBall(Ball ball)
     drawCubeCentered(ball.x,ball.y, ball.h-2,CLR_BLACK); //clearing the ball inner pixels
 
     drawCubeCentered(ball.x,ball.y, ball.h,ball.color);
-
-}
-
-Ball moveBall(Ball ball)
-{
-    if (ball.dir == 1){
-        ball.x = ball.x - 1;
-        ball.y = ball.y - 1;
-        if (ball.x-ball.h/2 <= 0){
-            ball.dir = 2;
-        }
-
-        if (ball.y-ball.h/2 <= 0){
-            ball.dir = 4;
-        }
-    }
-
-    if (ball.dir == 2){
-        ball.x = ball.x + 1;
-        ball.y = ball.y - 1;
-        if (ball.y-ball.h/2 <= 0){
-            ball.dir = 3;
-        }
-        if (ball.x+ball.h/2 >= SCREEN_HEIGHT){
-            ball.dir = 1;
-        }
-    }
-
-    if (ball.dir == 3){
-        ball.x = ball.x + 1;
-        ball.y = ball.y + 1;
-        if (ball.x+ball.h/2 >= SCREEN_HEIGHT){
-            ball.dir = 4;
-        }
-        if (ball.y+ball.h/2 >= SCREEN_WIDTH){
-            ball.dir = 2;
-        }
-    }
-
-    if (ball.dir == 4){
-        ball.x = ball.x - 1;
-        ball.y = ball.y + 1;
-        if (ball.y+ball.h/2 >= SCREEN_WIDTH){
-            ball.dir = 1;
-        }
-        if (ball.x-ball.h/2 <= 0){
-            ball.dir = 3;
-        }
-    }
-
-
-    return ball;
 }
 
 int main(void) 
