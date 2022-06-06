@@ -67,10 +67,10 @@ void drawRectXYXY(u8 x0, u8 y0, u8 x1, u8 y1, int color)
 
 void drawRectXYHW(u8 x, u8 y, u8 h, u8 w, int color)
 {
-	drawline(x+h,   y,   x,   y, color);
+	drawline(x+h,   y,   x,   y,  color);
 	drawline(  x,y+w-1,   x,   y, color);
 	drawline(  x,y+w, x+h-1, y+w, color);
-	drawline(x+h,   y, x+h, y+w, color);
+	drawline(x+h,   y, x+h, y+w,  color);
 }
 
 void drawCubeCentered(u8 x, u8 y, u8 h, int color)

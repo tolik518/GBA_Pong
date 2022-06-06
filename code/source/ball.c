@@ -4,88 +4,73 @@
 
 #include "ball.h"
 
-Ball moveBallTopLeft(Ball ball)
+void BallMoveTopLeft(Ball *self)
 {
-    ball.x = ball.x - 1;
-    ball.y = ball.y - 1;
-    return ball;
+    self->x -= 1;
+    self->y -= 1;
 }
 
-Ball moveBallBottomLeft(Ball ball)
+void BallMoveBottomLeft(Ball *self)
 {
-    ball.x = ball.x + 1;
-    ball.y = ball.y - 1;
-    return ball;
+    self->x += 1;
+    self->y -= 1;
 }
 
-Ball moveBallTopRight(Ball ball)
+void BallMoveTopRight(Ball *self)
 {
-    ball.x = ball.x + 1;
-    ball.y = ball.y + 1;
-    return ball;
+    self->x += 1;
+    self->y += 1;
 }
 
-Ball moveBallBottomRight(Ball ball)
+void BallMoveBottomRight(Ball *self)
 {
-    ball.x = ball.x - 1;
-    ball.y = ball.y + 1;
-    return ball;
+    self->x -= 1;
+    self->y += 1;
 }
 
-Ball moveBall(Ball ball)
+void BallMove(Ball *self)
 {
-    if (ball.dir == 1)
+    if (self->dir == 1)
     {
-        ball = moveBallTopLeft(ball);
-        if (ball.x-ball.h/2 <= 0) {
-            ball.dir = 2;
-            moveBall(ball);
+        BallMoveTopLeft(self);
+        if (self->x - self->h / 2 <= 0) {
+            self->dir = 2;
         }
-        if (ball.y-ball.h/2 <= 0) {
-            ball.dir = 4;
-            moveBall(ball);
+        if (self->y - self->h / 2 <= 0) {
+            self->dir = 4;
         }
     }
 
-    if (ball.dir == 2)
+    if (self->dir == 2)
     {
-        ball = moveBallBottomLeft(ball);
-        if (ball.y-ball.h/2 <= 0) {
-            ball.dir = 3;
-            moveBall(ball);
+        BallMoveBottomLeft(self);
+        if (self->y - self->h / 2 <= 0) {
+            self->dir = 3;
         }
-        if (ball.x+ball.h/2 >= SCREEN_HEIGHT) {
-            ball.dir = 1;
-            moveBall(ball);
+        if (self->x + self->h / 2 >= SCREEN_HEIGHT) {
+            self->dir = 1;
         }
     }
 
-    if (ball.dir == 3)
+    if (self->dir == 3)
     {
-        ball = moveBallTopRight(ball);
-        if (ball.x+ball.h/2 >= SCREEN_HEIGHT) {
-            ball.dir = 4;
-            moveBall(ball);
+        BallMoveTopRight(self);
+        if (self->x + self->h / 2 >= SCREEN_HEIGHT) {
+            self->dir = 4;
         }
-        if (ball.y+ball.h/2 >= SCREEN_WIDTH) {
-            ball.dir = 2;
-            moveBall(ball);
+        if (self->y + self->h / 2 >= SCREEN_WIDTH) {
+            self->dir = 2;
         }
     }
 
-    if (ball.dir == 4)
+    if (self->dir == 4)
     {
-        ball = moveBallBottomRight(ball);
-
-        if (ball.y+ball.h/2 >= SCREEN_WIDTH)  {
-            ball.dir = 1;
-            moveBall(ball);
+        BallMoveBottomRight(self);
+        if (self->y + self->h / 2 >= SCREEN_WIDTH)  {
+            self->dir = 1;
         }
-        if (ball.x-ball.h/2 <= 0)  {
-            ball.dir = 3;
-            moveBall(ball);
+        if (self->x - self->h / 2 <= 0)  {
+            self->dir = 3;
         }
     }
-
-    return ball;
 }

@@ -1,7 +1,9 @@
 #include <../include/tonc.h>
 
+#ifndef PONG_BALL_H
+#define PONG_BALL_H
 
-typedef struct ball
+typedef struct
 {
     u8    x;
     u8    y;
@@ -10,4 +12,6 @@ typedef struct ball
     COLOR color;
 } Ball;
 
-Ball moveBall(Ball ball);
+void BallMove(Ball *self);
+
+#endif
