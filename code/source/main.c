@@ -21,25 +21,43 @@ void renderBall(const Ball *ball)
     drawCubeCentered(ball->x,ball->y, ball->h,ball->color);
 }
 
+
 int main(void) 
 {
 	REG_DISPCNT = DCNT_MODE3 | DCNT_BG2;
 
+    Paddle _p1 = {
+            SCREEN_HEIGHT/2-PADDLE_HEIGHT/2,
+            10,
+            PADDLE_HEIGHT,
+            PADDLE_WIDTH
+    };
 
-    Paddle paddle1 = {SCREEN_HEIGHT/2-PADDLE_HEIGHT/2, 10, PADDLE_HEIGHT, PADDLE_WIDTH};
-    Paddle paddle2 = {SCREEN_HEIGHT/2-PADDLE_HEIGHT/2, SCREEN_WIDTH-PADDLE_WIDTH-10, PADDLE_HEIGHT, PADDLE_WIDTH};
+    Paddle _p2 = {
+            SCREEN_HEIGHT/2-PADDLE_HEIGHT/2,
+            SCREEN_WIDTH-PADDLE_WIDTH-10,
+            PADDLE_HEIGHT,
+            PADDLE_WIDTH
+    };
 
-    Paddle* p1 = &paddle1;
-    Paddle* p2 = &paddle2;
+    Ball _ball = {
+            SCREEN_HEIGHT/2-1,
+            SCREEN_WIDTH/2-1,
+            10,
+            qran_range(0,4),
+            CLR_ORANGE
+    };
 
-    Ball ball = {SCREEN_HEIGHT/2-1,SCREEN_WIDTH/2-1, 10, 1, CLR_GREEN};
+    Paddle *p1 = &_p1;
+    Paddle *p2 = &_p2;
+    Ball *ball = &_ball;
 
-	irq_init(NULL);
+    irq_init(NULL);
 	irq_add(II_VBLANK, NULL);
 
 	renderPlayer(p1);
 	renderPlayer(p2);
-    renderBall(&ball);
+    renderBall(ball);
 
 	while (1) 
 	{
@@ -48,7 +66,7 @@ int main(void)
 
 		if (key_is_down(KEY_DOWN))
 		{
-			if (p1->x < SCREEN_HEIGHT-p1->h-2)
+			if (p1->x < SCREEN_HEIGHT- p1->h -2)
 			{
 				p1->x += 1;
 				p2->x += 1;
@@ -68,9 +86,8 @@ int main(void)
 			}
 		}
 
-        BallMove(&ball);
-        ball.color = CLR_RED;
-        renderBall(&ball);
+        BallMove(ball);
+        renderBall(ball);
     }
 	return 1;
 }

@@ -2,6 +2,8 @@
 
 #include "functions.h"
 
+#define OFFSET (h-1)/2
+
 void drawline(u8 x0, u8 y0, u8 x1, u8 y1, int color) 
 {
 	if (x0 == x1)
@@ -43,13 +45,15 @@ void drawline(u8 x0, u8 y0, u8 x1, u8 y1, int color)
 
 		int e2 = 2 * error;
 
-		if (e2 >= dy) {
+		if (e2 >= dy) 
+		{
 			if (x0 == x1) break;
 			error = error + dy;
 			x0 = x0 + sx;
 		}
 
-		if (e2 <= dx) {
+		if (e2 <= dx) 
+		{
 			if (y0 == y1) break;
 			error = error + dx;
 			y0 = y0 + sy;
@@ -67,26 +71,24 @@ void drawRectXYXY(u8 x0, u8 y0, u8 x1, u8 y1, int color)
 
 void drawRectXYHW(u8 x, u8 y, u8 h, u8 w, int color)
 {
-	drawline(x+h,   y,   x,   y,  color);
-	drawline(  x,y+w-1,   x,   y, color);
-	drawline(  x,y+w, x+h-1, y+w, color);
-	drawline(x+h,   y, x+h, y+w,  color);
+	drawline(x+h,     y,     x,   y, color);
+	drawline(  x, y+w-1,     x,   y, color);
+	drawline(  x,   y+w, x+h-1, y+w, color);
+	drawline(x+h,     y,   x+h, y+w, color);
 }
 
 void drawCubeCentered(u8 x, u8 y, u8 h, int color)
 {
-	drawline(x-(h-1)/2,y+(h-1)/2, x+(h-1)/2, y+(h-1)/2, color);
-	drawline(x+(h-1)/2,y-(h-1)/2, x+(h-1)/2, y+(h-1)/2, color);
-	drawline(x+(h-1)/2,y-(h-1)/2, x-(h-1)/2, y-(h-1)/2, color);
-	drawline(x-(h-1)/2,y+(h-1)/2, x-(h-1)/2, y-(h-1)/2, color);
+	drawline(x-OFFSET, y+OFFSET, x+OFFSET, y+OFFSET, color);
+	drawline(x+OFFSET, y-OFFSET, x+OFFSET, y+OFFSET, color);
+	drawline(x+OFFSET, y-OFFSET, x-OFFSET, y-OFFSET, color);
+	drawline(x-OFFSET, y+OFFSET, x-OFFSET, y-OFFSET, color);
 }
 
 void drawRectXYHWfill(u8 x, u8 y, u8 h, u8 w, int color)
 {
-	for (size_t i = 0; i <= h; i++)
-	{
-		for (size_t j = 0; j <= w; j++)
-		{
+	for (size_t i = 0; i <= h; i++) {
+		for (size_t j = 0; j <= w; j++){
 			m3_mem[x+i][y+j] = color;
 		}
 	}
