@@ -1,10 +1,8 @@
 version: '3.5'
 services:
   dkp_compiler:
-    security_opt:
-      - apparmor=docker-default
     image: ${VENDORNAME}/${PROJECTNAME}/${CONTAINERNAME}:dev
-    container_name: ${CONTAINERNAME}
+    container_name: ${VENDORNAME}_${PROJECTNAME}_${CONTAINERNAME}
     volumes:
       - ${PWD}/code:/${USER}
       - ${PWD}/out:/out

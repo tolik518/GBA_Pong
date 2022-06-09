@@ -1,4 +1,4 @@
-FROM debian AS dkp_downloader
+FROM bitnami/minideb:buster-amd64 AS dkp_downloader
 LABEL maintainer="Anatolij 'Tolik518' Vasilev <function@returnnull.de>"
 ENV DEBIAN_FRONTEND='noninteractive' 
 
@@ -20,7 +20,7 @@ FROM bitnami/minideb:buster-amd64 as dkp_compiler
 ARG uid
 ARG user
 
-# RUN apt-get update && apt-get install make -y 
+RUN apt-get update && apt-get install make -y 
 
 COPY --from=dkp_downloader /opt/devkitpro /opt/devkitpro
 
