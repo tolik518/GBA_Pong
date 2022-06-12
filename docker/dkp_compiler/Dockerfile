@@ -1,6 +1,9 @@
 FROM bitnami/minideb:buster-amd64 AS dkp_downloader
 LABEL maintainer="Anatolij 'Tolik518' Vasilev <function@returnnull.de>"
-ENV DEBIAN_FRONTEND='noninteractive' 
+
+# fix for docker on windows, on some windows version you'd
+# get an error that /etc/mtab may not exist 
+RUN test -f /etc/mtab || ln -s /proc/self/mounts /etc/mtab 
 
 RUN apt-get update && apt-get install wget -y
 
@@ -13,7 +16,7 @@ RUN wget https://apt.devkitpro.org/install-devkitpro-pacman &&\
 # Get and install the gba-dev ressources for developement 
 RUN dkp-pacman -S --noconfirm gba-dev
 
-
+# ----------------------------------------------------------
 # This is the stage we'll be using for compiling our source 
 FROM bitnami/minideb:buster-amd64 as dkp_compiler
 
