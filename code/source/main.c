@@ -66,7 +66,7 @@ int main(void)
 
 		if (key_is_down(KEY_DOWN))
 		{
-			if (p1->x < SCREEN_HEIGHT- p1->h -2)
+			if (p1->x < SCREEN_HEIGHT - p1->h - 2)
 			{
 				p1->x += 1;
 				p2->x += 1;
@@ -86,8 +86,10 @@ int main(void)
 			}
 		}
 
+
         BallMove(ball);
         renderBall(ball);
-    }
+    	drawRectXYHW(0, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, CLR_WHITE);
+	}
 	return 1;
 }

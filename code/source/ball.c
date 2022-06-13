@@ -14,10 +14,10 @@ LEFT.................RIGHT
 #define BALL_BOTTOMRIGHT 3
 #define BALL_TOPRIGHT    4
 // Collisions of the wall and the walls
-#define BALL_COLLISION_TOP     self->x - self->h / 2 <= 0
-#define BALL_COLLISION_LEFT    self->y - self->h / 2 <= 0
-#define BALL_COLLISION_RIGHT   self->y + self->h / 2 >= SCREEN_WIDTH
-#define BALL_COLLISION_BOTTOM  self->x + self->h / 2 >= SCREEN_HEIGHT
+#define BALL_COLLISION_TOP     self->x - (self->h / 2) <= 0
+#define BALL_COLLISION_LEFT    self->y - (self->h / 2) <= 0
+#define BALL_COLLISION_RIGHT   self->y + (self->h / 2) >= SCREEN_WIDTH  - 1
+#define BALL_COLLISION_BOTTOM  self->x + (self->h / 2) >= SCREEN_HEIGHT - 1
 
 
 void BallMoveTopLeft(Ball *self)
@@ -51,9 +51,11 @@ void BallMove(Ball *self)
         BallMoveTopLeft(self);
         if (BALL_COLLISION_TOP) {
             self->dir = BALL_BOTTOMLEFT;
+            return;
         }
         if (BALL_COLLISION_LEFT) {
             self->dir = BALL_TOPRIGHT;
+            return;
         }
     }
 
@@ -62,9 +64,11 @@ void BallMove(Ball *self)
         BallMoveBottomLeft(self);
         if (BALL_COLLISION_BOTTOM) {
             self->dir = BALL_TOPLEFT;
+            return;
         }
         if (BALL_COLLISION_LEFT) {
             self->dir = BALL_BOTTOMRIGHT;
+            return;
         }
     }
 
@@ -73,9 +77,11 @@ void BallMove(Ball *self)
         BallMoveBottomRight(self);
         if (BALL_COLLISION_BOTTOM) {
             self->dir = BALL_TOPRIGHT;
+            return;
         }
         if (BALL_COLLISION_RIGHT) {
             self->dir = BALL_BOTTOMLEFT;
+            return;
         }
     }
 
@@ -84,9 +90,11 @@ void BallMove(Ball *self)
         BallMoveTopRight(self);
         if (BALL_COLLISION_TOP) {
             self->dir = BALL_BOTTOMRIGHT;
+            return;
         }
         if (BALL_COLLISION_RIGHT) {
             self->dir = BALL_TOPLEFT;
+            return;
         }
     }
 }

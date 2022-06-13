@@ -88,7 +88,7 @@ void drawCubeCentered(int x, int y, int h, int color)
 void drawRectXYHWfill(int x, int y, int h, int w, int color)
 {
 	for (size_t i = 0; i <= h; i++) {
-		for (size_t j = 0; j <= w; j++){
+		for (size_t j = 0; j <= w; j++) {
 			m3_mem[x+i][y+j] = color;
 		}
 	}
