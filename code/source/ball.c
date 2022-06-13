@@ -1,23 +1,21 @@
+#include "paddle.h"
 #include "ball.h"
 
-/*********-TOP-**********\
-*.1....................4.*
-*........................*
-LEFT.................RIGHT
-*........................*
-*.2....................3.*
-\********-BOTTOM-********/
-
-// Directions the ball can go
-#define BALL_TOPLEFT     1
-#define BALL_BOTTOMLEFT  2
-#define BALL_BOTTOMRIGHT 3
-#define BALL_TOPRIGHT    4
 // Collisions of the wall and the walls
 #define BALL_COLLISION_TOP     self->x - (self->h / 2) <= 0
 #define BALL_COLLISION_LEFT    self->y - (self->h / 2) <= 0
 #define BALL_COLLISION_RIGHT   self->y + (self->h / 2) >= SCREEN_WIDTH  - 1
 #define BALL_COLLISION_BOTTOM  self->x + (self->h / 2) >= SCREEN_HEIGHT - 1
+
+#define BALL_POSITION_LEFT     self->y - (self->h/2)
+#define BALL_POSITION_RIGHT    self->y + (self->h/2)
+#define BALL_POSITION_TOP      self->x - (self->h/2)
+#define BALL_POSITION_BOTTOM   self->x + (self->h/2)
+
+#define PLAYER_POSITION_LEFT   player->y
+#define PLAYER_POSITION_RIGHT  player->y + player->w
+#define PLAYER_POSITION_TOP    player->x
+#define PLAYER_POSITION_BOTTOM player->x + player->h
 
 
 void BallMoveTopLeft(Ball *self)
@@ -46,55 +44,77 @@ void BallMoveTopRight(Ball *self)
 
 void BallMove(Ball *self)
 {
-    if (self->dir == BALL_TOPLEFT)
+    if (self->dir == BALL_MOVES_TOPLEFT)
     {
         BallMoveTopLeft(self);
         if (BALL_COLLISION_TOP) {
-            self->dir = BALL_BOTTOMLEFT;
+            self->dir = BALL_MOVES_BOTTOMLEFT;
             return;
         }
         if (BALL_COLLISION_LEFT) {
-            self->dir = BALL_TOPRIGHT;
+            self->dir = BALL_MOVES_TOPRIGHT;
             return;
         }
     }
 
-    if (self->dir == BALL_BOTTOMLEFT)
+    if (self->dir == BALL_MOVES_BOTTOMLEFT)
     {
         BallMoveBottomLeft(self);
         if (BALL_COLLISION_BOTTOM) {
-            self->dir = BALL_TOPLEFT;
+            self->dir = BALL_MOVES_TOPLEFT;
             return;
         }
         if (BALL_COLLISION_LEFT) {
-            self->dir = BALL_BOTTOMRIGHT;
+            self->dir = BALL_MOVES_BOTTOMRIGHT;
             return;
         }
     }
 
-    if (self->dir == BALL_BOTTOMRIGHT)
+    if (self->dir == BALL_MOVES_BOTTOMRIGHT)
     {
         BallMoveBottomRight(self);
         if (BALL_COLLISION_BOTTOM) {
-            self->dir = BALL_TOPRIGHT;
+            self->dir = BALL_MOVES_TOPRIGHT;
             return;
         }
         if (BALL_COLLISION_RIGHT) {
-            self->dir = BALL_BOTTOMLEFT;
+            self->dir = BALL_MOVES_BOTTOMLEFT;
             return;
         }
     }
 
-    if (self->dir == BALL_TOPRIGHT)
+    if (self->dir == BALL_MOVES_TOPRIGHT)
     {
         BallMoveTopRight(self);
         if (BALL_COLLISION_TOP) {
-            self->dir = BALL_BOTTOMRIGHT;
+            self->dir = BALL_MOVES_BOTTOMRIGHT;
             return;
         }
         if (BALL_COLLISION_RIGHT) {
-            self->dir = BALL_TOPLEFT;
+            self->dir = BALL_MOVES_TOPLEFT;
             return;
         }
     }
+}
+
+//https://austinmorlan.com/posts/pong_clone/
+bool BallCheckCollisionWithPaddle(const Ball *self, const Paddle *player)
+{
+    if (BALL_POSITION_LEFT >= PLAYER_POSITION_RIGHT){
+        return false;
+    }
+
+    if (BALL_POSITION_RIGHT <= PLAYER_POSITION_LEFT){
+        return false;
+    }
+
+    if (BALL_POSITION_TOP >= PLAYER_POSITION_BOTTOM){
+        return false;
+    }
+
+    if (BALL_POSITION_BOTTOM <= PLAYER_POSITION_TOP){
+        return false;
+    }
+
+    return true;
 }

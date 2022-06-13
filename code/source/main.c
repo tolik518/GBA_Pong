@@ -2,13 +2,14 @@
 #include <../include/tonc_video.h>
 
 #include "draw.h"
-#include "ball.h"
 #include "paddle.h"
+#include "ball.h"
 
 void renderPlayer(const Paddle *p)
 {
-	drawRectXYHW(p->x-1, p->y-1, p->h+2, p->w+2, CLR_BLACK); //clearing the paddle outer pixels
-	drawRectXYHW(p->x+1, p->y+1, p->h-2, p->w-2, CLR_BLACK); //clearing the paddle inner pixels
+	drawRectXYHW(p->x+p->speed, p->y+1, p->h-(p->speed*2), p->w-2, CLR_BLACK); //clearing the paddle inner pixels
+	drawRectXYHW(p->x - p->speed, p->y, p->speed, p->w, CLR_BLACK); //clearing pixels above the paddle
+	drawRectXYHW(p->x + p->h, p->y, p->speed, p->w, CLR_BLACK); //clearing pixels below the paddle
 
 	drawRectXYHW(p->x, p->y, p->h, p->w, CLR_CYAN);
 }
@@ -21,30 +22,31 @@ void renderBall(const Ball *ball)
     drawCubeCentered(ball->x,ball->y, ball->h,ball->color);
 }
 
-
 int main(void) 
 {
 	REG_DISPCNT = DCNT_MODE3 | DCNT_BG2;
 
     Paddle _p1 = {
-            SCREEN_HEIGHT/2-PADDLE_HEIGHT/2,
+            SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
             10,
             PADDLE_HEIGHT,
-            PADDLE_WIDTH
+            PADDLE_WIDTH,
+			2
     };
 
     Paddle _p2 = {
-            SCREEN_HEIGHT/2-PADDLE_HEIGHT/2,
-            SCREEN_WIDTH-PADDLE_WIDTH-10,
+            SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
+            SCREEN_WIDTH - PADDLE_WIDTH-10,
             PADDLE_HEIGHT,
-            PADDLE_WIDTH
+            PADDLE_WIDTH,
+			2
     };
 
     Ball _ball = {
-            SCREEN_HEIGHT/2-1,
-            SCREEN_WIDTH/2-1,
+            SCREEN_HEIGHT/2 - 1,
+            SCREEN_WIDTH/2 - 1,
             10,
-            qran_range(0,4),
+            qran_range(0, 4),
             CLR_ORANGE
     };
 
@@ -66,10 +68,10 @@ int main(void)
 
 		if (key_is_down(KEY_DOWN))
 		{
-			if (p1->x < SCREEN_HEIGHT - p1->h - 2)
+			if (p1->x < SCREEN_HEIGHT - 1 - p1->h - p1->speed)
 			{
-				p1->x += 1;
-				p2->x += 1;
+				p1->x += p1->speed;
+				p2->x += p2->speed;
 				renderPlayer(p1);
 				renderPlayer(p2);
 			}
@@ -77,19 +79,28 @@ int main(void)
 
 		if (key_is_down(KEY_UP)) 
 		{
-			if (p1->x > 1)
+			if (p1->x > p1->speed)
 			{
-				p1->x -= 1;
-				p2->x -= 1;
+				p1->x -= p1->speed;
+				p2->x -= p2->speed;
 				renderPlayer(p1);
 				renderPlayer(p2);
 			}
 		}
 
-
         BallMove(ball);
         renderBall(ball);
-    	drawRectXYHW(0, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, CLR_WHITE);
+		renderPlayer(p1);
+		renderPlayer(p2);	
+
+		if (BallCheckCollisionWithPaddle(ball, p1) ||
+			BallCheckCollisionWithPaddle(ball, p2))
+		{
+			ball->dir = (ball->dir+1)%4;
+		}
+
+
+    	drawRectXYHW(0, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, CLR_WHITE); // white border around the screen
 	}
 	return 1;
 }
