@@ -5,11 +5,11 @@
 
 typedef struct
 {
-    u8    x;
-    u8    y;
-    u8    h;   //height
-    u8    dir; //direction
-    COLOR color;
+    int    x;
+    int    y;
+    int    h;   //height
+    int    dir; //direction
+    COLOR  color;
 } Ball;
 
 void BallMove(Ball *self);
