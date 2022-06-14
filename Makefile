@@ -1,9 +1,7 @@
 VENDORNAME=returnnull
 PROJECTNAME=pong
 CONTAINERNAME=dkp_compiler
-USER= $(shell whoami)
-COMPOSE=USER=$(USER) CONTAINERNAME=$(CONTAINERNAME) PROJECTNAME='$(PROJECTNAME)' VENDORNAME=$(VENDORNAME) PWD=$(shell pwd)\
-        docker-compose -p $(PROJECTNAME) -f docker/compose/docker-compose.yml
+USER=$(shell whoami)
 
 .PHONY: build_image
 build_image:
@@ -14,9 +12,13 @@ build_image:
 run: compile
 	mgba-qt -4 out/game.gba
 
-.PHONY: compile
-compile: cleanup
-	$(COMPOSE) up --exit-code-from $(CONTAINERNAME)
+.PHONY: compile2
+compile2: cleanup
+	docker run \
+		-v ${PWD}/code:/${USER} \
+		-v ${PWD}/out:/out \
+		-t -e "TERM=xterm-256color" \
+		$(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev
 
 .PHONY: getincludes
 getincludes:

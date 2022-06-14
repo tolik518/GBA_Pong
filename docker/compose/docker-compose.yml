@@ -1,8 +1,0 @@
-version: '3.5'
-services:
-  dkp_compiler:
-    image: ${VENDORNAME}/${PROJECTNAME}/${CONTAINERNAME}:dev
-    container_name: ${VENDORNAME}_${PROJECTNAME}_${CONTAINERNAME}
-    volumes:
-      - ${PWD}/code:/${USER}
-      - ${PWD}/out:/out
