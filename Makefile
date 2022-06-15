@@ -29,8 +29,22 @@ getincludes:
 	docker cp $$(cat c.cid):/opt/devkitpro/libtonc/include $$(pwd)/code/
 	-@rm c.cid
 
-.PHONY: clean_all
-clean_files: clean_files
+# example "make grit_gB16 img=img/pong_tc.png"
+.PHONY: grit_gB16
+grit_gB16: 
+	make grit img=$(img) args="-ftc -gb -gB16"
+
+# example "make grit img=img/pong_tc.png args=gB8"
+.PHONY: grit
+grit:  
+	docker run \
+		-v ${PWD}/code:/${USER} \
+		-v ${PWD}/out:/out \
+		$(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev \
+		"/opt/devkitpro/tools/bin/grit" $(img) $(args) "-o$(img)"
+
+.PHONY: clean_all_files
+clean_all_files: clean_files
 	rm -rf $$(pwd)/code/build
 
 .PHONY: clean_files
