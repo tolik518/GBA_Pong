@@ -5,32 +5,34 @@
 #include "paddle.h"
 #include "ball.h"
 
-#include "../img/pong_logo.c"
-#include "../img/pong_logo_2.c"
+#include "../img/titlescreen0.c"
+#include "../img/titlescreen1.c"
 
-#define BG_COLOR RGB8(34,32,52)
+#define BG_COLOR RGB8(34, 32, 52)
+#define PADDLE_COLLISION_BOTTOM (p1->x < SCREEN_HEIGHT - 1 - p1->h - p1->speed)
+#define PADDLE_COLLISION_TOP    (p1->x > p1->speed)
 
 
 void renderPlayer(const Paddle *p)
 {
-	drawRectXYHW(p->x+p->speed, p->y+1, p->h-(p->speed*2), p->w-2, BG_COLOR); //clearing the paddle inner pixels
-	drawRectXYHW(p->x - p->speed, p->y, p->speed, p->w, BG_COLOR); //clearing pixels above the paddle
-	drawRectXYHW(p->x + p->h, p->y, p->speed, p->w, BG_COLOR); //clearing pixels below the paddle
+	drawRectXYHW(p->x + p->speed, p->y + 1, p->h-(p->speed*2), p->w-2, BG_COLOR); //clearing the paddle inner pixels
+	drawRectXYHW(p->x - p->speed, p->y,		p->speed, 		   p->w, BG_COLOR);   //clearing pixels above the paddle
+	drawRectXYHW(p->x + p->h, 	  p->y, 	p->speed, 		   p->w, BG_COLOR);   //clearing pixels below the paddle
 
 	drawRectXYHW(p->x, p->y, p->h, p->w, CLR_CYAN);
 }
 
 void renderBall(const Ball *ball)
 {
-    drawCubeCentered(ball->x,ball->y, ball->h+1, BG_COLOR); //clearing the ball outer pixels
-    drawCubeCentered(ball->x,ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
+    drawCubeCentered(ball->x, ball->y, ball->h+1, BG_COLOR); //clearing the ball outer pixels
+    drawCubeCentered(ball->x, ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
 
-    drawCubeCentered(ball->x,ball->y, ball->h,ball->color);
+    drawCubeCentered(ball->x, ball->y, ball->h, ball->color);
 }
 
 int main(void) 
 {
-	REG_DISPCNT = DCNT_MODE3 | DCNT_BG2;
+	REG_DISPCNT = DCNT_MODE3 | DCNT_BG2  | DCNT_OBJ;
 
     Paddle _p1 = {
             SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
@@ -65,33 +67,41 @@ int main(void)
 
 
 
+	/***************
+	*  titlescreen
+	***************/
 	int frame = 0;
 	while (1) 
 	{
 		VBlankIntrWait();
+		key_poll();
 
-		if(frame%15>=7){
-			tonccpy(m3_mem, pong_logo_2Bitmap, 76800);
+		if (frame%15 >= 7) {
+			tonccpy(m3_mem, titlescreen0Bitmap, 76800);
 		} 
 
-		if(frame%15<7){
-			tonccpy(m3_mem, pong_logoBitmap, 76800);
+		if (frame%15 < 7) {
+			tonccpy(m3_mem, titlescreen1Bitmap, 76800);
 		}
 
-		key_poll();
 		if (key_is_down(KEY_ANY)) 
 		{
 			break;
 		}
+
 		frame++;
 	}
 
-	drawRectXYHWfill(0,0,SCREEN_HEIGHT, SCREEN_WIDTH, BG_COLOR);
+	//drawRectXYHWfill(0,0,SCREEN_HEIGHT, SCREEN_WIDTH, BG_COLOR);
+	m3_fill(BG_COLOR);
 
 	renderPlayer(p1);
 	renderPlayer(p2);
 	renderBall(ball);
 
+	/***************
+	*   main loop
+	***************/
 	while (1) 
 	{		
 		VBlankIntrWait();
@@ -99,7 +109,7 @@ int main(void)
 
 		if (key_is_down(KEY_DOWN))
 		{
-			if (p1->x < SCREEN_HEIGHT - 1 - p1->h - p1->speed)
+			if (PADDLE_COLLISION_BOTTOM)
 			{
 				p1->x += p1->speed;
 				p2->x += p2->speed;
@@ -110,7 +120,7 @@ int main(void)
 
 		if (key_is_down(KEY_UP)) 
 		{
-			if (p1->x > p1->speed)
+			if (PADDLE_COLLISION_TOP)
 			{
 				p1->x -= p1->speed;
 				p2->x -= p2->speed;
@@ -130,7 +140,7 @@ int main(void)
 			ball->dir = (ball->dir+1)%4;
 		}
 
-    	drawRectXYHW(0, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, CLR_WHITE); // white border around the screen
+    	drawRectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
 	}
 	return 1;
 }
