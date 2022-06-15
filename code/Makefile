@@ -27,7 +27,7 @@ LIBTONC := $(DEVKITPRO)/libtonc
 #---------------------------------------------------------------------------------
 TARGET		:= ../out/game
 BUILD		:= build
-SOURCES		:= source
+SOURCES		:= source img
 INCLUDES	:= include
 DATA		:=
 MUSIC		:=

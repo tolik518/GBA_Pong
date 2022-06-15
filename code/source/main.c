@@ -5,11 +5,11 @@
 #include "paddle.h"
 #include "ball.h"
 
-#include "../img/title_0.c"
-#include "../img/title_1.c"
-#include "../img/title_2.c"
-#include "../img/title_3.c"
-#include "../img/title_pong.c"
+#include "../img/title_0.h"
+#include "../img/title_1.h"
+#include "../img/title_2.h"
+#include "../img/title_3.h"
+#include "../img/title_pong.h"
 
 
 #define BG_COLOR 				RGB8(34, 32, 52)
@@ -46,7 +46,7 @@ int main(void)
 	/***************
 	*  titlescreen *
 	***************/
-	tonccpy(m3_mem, title_0Bitmap, 76800);
+	tonccpy(m3_mem, title_0Bitmap, title_0BitmapLen);
 
 	int frame = 0;
 	bool title_1 = false;
@@ -59,17 +59,17 @@ int main(void)
 		//kids, dont do animations like this at home
 		if (frame > 60) 
 		{
-			if(!title_1) tonccpy(m3_mem, title_1Bitmap, 76800);
+			if(!title_1) tonccpy(m3_mem, title_1Bitmap, title_1BitmapLen);
 			title_1 = true;
 
 			if (frame > 120) 
 			{
 				if (frame%15 >= 7) {
-					tonccpy(m3_mem, title_2Bitmap, 76800);
+					tonccpy(m3_mem, title_2Bitmap, title_2BitmapLen);
 				} 
 
 				if (frame%15 < 7) {
-					tonccpy(m3_mem, title_3Bitmap, 76800);
+					tonccpy(m3_mem, title_3Bitmap, title_3BitmapLen);
 				}
 
 				if (key_is_down(KEY_ANY)) {
