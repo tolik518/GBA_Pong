@@ -5,19 +5,25 @@
 #include "paddle.h"
 #include "ball.h"
 
+#include "../img/pong_logo.c"
+#include "../img/pong_logo_2.c"
+
+#define BG_COLOR RGB8(34,32,52)
+
+
 void renderPlayer(const Paddle *p)
 {
-	drawRectXYHW(p->x+p->speed, p->y+1, p->h-(p->speed*2), p->w-2, CLR_BLACK); //clearing the paddle inner pixels
-	drawRectXYHW(p->x - p->speed, p->y, p->speed, p->w, CLR_BLACK); //clearing pixels above the paddle
-	drawRectXYHW(p->x + p->h, p->y, p->speed, p->w, CLR_BLACK); //clearing pixels below the paddle
+	drawRectXYHW(p->x+p->speed, p->y+1, p->h-(p->speed*2), p->w-2, BG_COLOR); //clearing the paddle inner pixels
+	drawRectXYHW(p->x - p->speed, p->y, p->speed, p->w, BG_COLOR); //clearing pixels above the paddle
+	drawRectXYHW(p->x + p->h, p->y, p->speed, p->w, BG_COLOR); //clearing pixels below the paddle
 
 	drawRectXYHW(p->x, p->y, p->h, p->w, CLR_CYAN);
 }
 
 void renderBall(const Ball *ball)
 {
-    drawCubeCentered(ball->x,ball->y, ball->h+1,CLR_BLACK); //clearing the ball outer pixels
-    drawCubeCentered(ball->x,ball->y, ball->h-2,CLR_BLACK); //clearing the ball inner pixels
+    drawCubeCentered(ball->x,ball->y, ball->h+1, BG_COLOR); //clearing the ball outer pixels
+    drawCubeCentered(ball->x,ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
 
     drawCubeCentered(ball->x,ball->y, ball->h,ball->color);
 }
@@ -57,12 +63,37 @@ int main(void)
     irq_init(NULL);
 	irq_add(II_VBLANK, NULL);
 
-	renderPlayer(p1);
-	renderPlayer(p2);
-    renderBall(ball);
 
+
+	int frame = 0;
 	while (1) 
 	{
+		VBlankIntrWait();
+
+		if(frame%15>=7){
+			tonccpy(m3_mem, pong_logo_2Bitmap, 76800);
+		} 
+
+		if(frame%15<7){
+			tonccpy(m3_mem, pong_logoBitmap, 76800);
+		}
+
+		key_poll();
+		if (key_is_down(KEY_ANY)) 
+		{
+			break;
+		}
+		frame++;
+	}
+
+	drawRectXYHWfill(0,0,SCREEN_HEIGHT, SCREEN_WIDTH, BG_COLOR);
+
+	renderPlayer(p1);
+	renderPlayer(p2);
+	renderBall(ball);
+
+	while (1) 
+	{		
 		VBlankIntrWait();
 		key_poll();
 
@@ -98,7 +129,6 @@ int main(void)
 		{
 			ball->dir = (ball->dir+1)%4;
 		}
-
 
     	drawRectXYHW(0, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, CLR_WHITE); // white border around the screen
 	}
