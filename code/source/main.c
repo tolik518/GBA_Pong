@@ -5,8 +5,12 @@
 #include "paddle.h"
 #include "ball.h"
 
-#include "../img/titlescreen0.c"
-#include "../img/titlescreen1.c"
+#include "../img/title_0.c"
+#include "../img/title_1.c"
+#include "../img/title_2.c"
+#include "../img/title_3.c"
+#include "../img/title_pong.c"
+
 
 #define BG_COLOR 				RGB8(34, 32, 52)
 #define PADDLE_COLLISION_BOTTOM (p1->x < SCREEN_HEIGHT - 1 - p1->h - p1->speed)
@@ -40,24 +44,38 @@ int main(void)
 	irq_add(II_VBLANK, NULL);
 
 	/***************
-	*  titlescreen
+	*  titlescreen *
 	***************/
+	tonccpy(m3_mem, title_0Bitmap, 76800);
+
 	int frame = 0;
+	bool title_1 = false;
+
 	while (1) 
 	{
 		VBlankIntrWait();
 		key_poll();
 
-		if (frame%15 >= 7) {
-			tonccpy(m3_mem, titlescreen0Bitmap, 76800);
-		} 
+		//kids, dont do animations like this at home
+		if (frame > 60) 
+		{
+			if(!title_1) tonccpy(m3_mem, title_1Bitmap, 76800);
+			title_1 = true;
 
-		if (frame%15 < 7) {
-			tonccpy(m3_mem, titlescreen1Bitmap, 76800);
-		}
+			if (frame > 120) 
+			{
+				if (frame%15 >= 7) {
+					tonccpy(m3_mem, title_2Bitmap, 76800);
+				} 
 
-		if (key_is_down(KEY_ANY)) {
-			break;
+				if (frame%15 < 7) {
+					tonccpy(m3_mem, title_3Bitmap, 76800);
+				}
+
+				if (key_is_down(KEY_ANY)) {
+					break;
+				}
+			}
 		}
 
 		frame++;
@@ -100,7 +118,7 @@ int main(void)
 	renderBall(ball);
 
 	/***************
-	*   main loop
+	*   main loop  *
 	***************/
 	while (1) 
 	{		

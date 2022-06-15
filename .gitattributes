@@ -1,1 +1,3 @@
 code/Makefile linguist-vendored
+# the imagedata that was generated with grit by coranac
+code/img linguist-generated 

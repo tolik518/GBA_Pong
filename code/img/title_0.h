@@ -1,24 +1,24 @@
 
-//{{BLOCK(titlescreen1)
+//{{BLOCK(title_0)
 
 //======================================================================
 //
-//	titlescreen1, 240x160@16, 
+//	title_0, 240x160@16, 
 //	+ bitmap not compressed
 //	Total size: 76800 = 76800
 //
-//	Time-stamp: 2022-06-15, 14:32:21
+//	Time-stamp: 2022-06-15, 20:43:27
 //	Exported by Cearn's GBA Image Transmogrifier, v0.8.16
 //	( http://www.coranac.com/projects/#grit )
 //
 //======================================================================
 
-#ifndef GRIT_TITLESCREEN1_H
-#define GRIT_TITLESCREEN1_H
+#ifndef GRIT_TITLE_0_H
+#define GRIT_TITLE_0_H
 
-#define titlescreen1BitmapLen 76800
-extern const unsigned int titlescreen1Bitmap[19200];
+#define title_0BitmapLen 76800
+extern const unsigned int title_0Bitmap[19200];
 
-#endif // GRIT_TITLESCREEN1_H
+#endif // GRIT_TITLE_0_H
 
-//}}BLOCK(titlescreen1)
+//}}BLOCK(title_0)
