@@ -34,7 +34,7 @@ getincludes:
 grit_gB16: 
 	make grit img=$(img) args="-ftc -gb -gB16"
 
-# example "make grit img=img/pong_tc.png args=gB8"
+# example "make grit img=img/pong_tc.png args="-ftc -gb -gB16""
 .PHONY: grit
 grit:  
 	docker run \
