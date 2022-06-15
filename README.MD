@@ -1,10 +1,12 @@
-# GBA Pong
+# ![GBA Pong](https://returnnull.de/images/pong_transparent.png) 
+
 
 Pong for Game Boy Advance. Work in Progress.
 
 For now there is no way to lose and is only featuring a "play by yourself" mode. So you can't lose for now even if you want to ¯\\\_(ツ)_/¯
 
-![](https://returnnull.de/images/pong.gif)
+![Pong Titlescreen](https://returnnull.de/images/pong-2.png) 
+![Pong Game](https://returnnull.de/images/pong-1.png)
 
 ## How to Start Development (on Linux)
 * prerequisites: get [docker](https://www.docker.com/get-started/) and [docker-compose](https://docs.docker.com/compose/install/)
