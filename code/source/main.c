@@ -10,6 +10,8 @@
 #include "../img/title_2.h"
 #include "../img/title_3.h"
 #include "../img/title_pong.h"
+#include "../img/you_lost_0.h"
+#include "../img/you_lost_1.h"
 
 
 #define BG_COLOR 				RGB8(34, 32, 52)
@@ -120,6 +122,7 @@ int main(void)
 	/***************
 	*   main loop  *
 	***************/
+	int status = 0; 
 	while (1) 
 	{		
 		VBlankIntrWait();
@@ -145,7 +148,7 @@ int main(void)
 			}
 		}
 
-        BallMove(ball);
+        status = BallMove(ball);
         renderBall(ball);
 		renderPlayer(p1);
 		renderPlayer(p2);	
@@ -154,7 +157,20 @@ int main(void)
 			ball->dir = (ball->dir + 1) % 4;
 		}
 
-    	drawRectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
+    	//drawRectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
+
+		if (status != 0) {
+			while (true) {
+				if (frame%15 >= 7) {
+					tonccpy(m3_mem, you_lost_0Bitmap, you_lost_0BitmapLen);
+				} 
+
+				if (frame%15 < 7) {
+					tonccpy(m3_mem, you_lost_1Bitmap, you_lost_1BitmapLen);
+				}
+				frame++;
+			}
+		}
 	}
 	return 1;
 }
