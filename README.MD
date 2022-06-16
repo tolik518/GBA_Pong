@@ -1,4 +1,4 @@
-# ![GBA Pong](https://returnnull.de/images/pong_transparent.png) 
+# ![GBA Pong](https://returnnull.de/images/pong_github.png) 
 
 
 Pong for Game Boy Advance. Work in Progress.
@@ -7,6 +7,7 @@ For now there is no way to lose and is only featuring a "play by yourself" mode.
 
 ![Pong Titlescreen](https://returnnull.de/images/pong-2.png) 
 ![Pong Game](https://returnnull.de/images/pong-1.png)
+![Pong Game](https://returnnull.de/images/pong-3.png)
 
 ## How to Start Development (on Linux)
 * prerequisites: get [docker](https://www.docker.com/get-started/) and [docker-compose](https://docs.docker.com/compose/install/)
