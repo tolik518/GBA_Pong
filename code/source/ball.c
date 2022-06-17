@@ -18,25 +18,25 @@
 #define PLAYER_POSITION_BOTTOM player->x + player->h
 
 
-static void BallMoveTopLeft(Ball *self)
+static void MoveTopLeft(Ball *self)
 {
     self->x -= 1;
     self->y -= 1;
 }
 
-static void BallMoveBottomLeft(Ball *self)
+static void MoveBottomLeft(Ball *self)
 {
     self->x += 1;
     self->y -= 1;
 }
 
-static void BallMoveBottomRight(Ball *self)
+static void MoveBottomRight(Ball *self)
 {
     self->x += 1;
     self->y += 1;
 }
 
-static void BallMoveTopRight(Ball *self)
+static void MoveTopRight(Ball *self)
 {
     self->x -= 1;
     self->y += 1;
@@ -44,11 +44,11 @@ static void BallMoveTopRight(Ball *self)
 
 //return 1 = left player lost
 //return 2 = right player lost 
-int BallMove(Ball *self)
+int Ball_move(Ball *self)
 {
     if (self->dir == BALL_MOVES_TOPLEFT)
     {
-        BallMoveTopLeft(self);
+        MoveTopLeft(self);
         if (BALL_COLLISION_TOP) {
             self->dir = BALL_MOVES_BOTTOMLEFT;
             return 0;
@@ -61,7 +61,7 @@ int BallMove(Ball *self)
 
     if (self->dir == BALL_MOVES_BOTTOMLEFT)
     {
-        BallMoveBottomLeft(self);
+        MoveBottomLeft(self);
         if (BALL_COLLISION_BOTTOM) {
             self->dir = BALL_MOVES_TOPLEFT;
             return 0;
@@ -74,7 +74,7 @@ int BallMove(Ball *self)
 
     if (self->dir == BALL_MOVES_BOTTOMRIGHT)
     {
-        BallMoveBottomRight(self);
+        MoveBottomRight(self);
         if (BALL_COLLISION_BOTTOM) {
             self->dir = BALL_MOVES_TOPRIGHT;
             return 0;
@@ -87,7 +87,7 @@ int BallMove(Ball *self)
 
     if (self->dir == BALL_MOVES_TOPRIGHT)
     {
-        BallMoveTopRight(self);
+        MoveTopRight(self);
         if (BALL_COLLISION_TOP) {
             self->dir = BALL_MOVES_BOTTOMRIGHT;
             return 0;
@@ -102,7 +102,7 @@ int BallMove(Ball *self)
 }
 
 //https://austinmorlan.com/posts/pong_clone/
-bool BallCheckCollisionWithPaddle(const Ball *self, const Paddle *player)
+bool Ball_checkCollisionWithPaddle(const Ball *self, const Paddle *player)
 {
     if (BALL_POSITION_LEFT >= PLAYER_POSITION_RIGHT){
         return false;

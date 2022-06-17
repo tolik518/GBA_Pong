@@ -26,7 +26,7 @@ typedef struct
     COLOR  color;
 } Ball;
 
-int BallMove(Ball *self);
-bool BallCheckCollisionWithPaddle(const Ball *self, const Paddle *player);
+int Ball_move(Ball *self);
+bool Ball_checkCollisionWithPaddle(const Ball *self, const Paddle *player);
 
 #endif

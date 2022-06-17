@@ -4,7 +4,7 @@
 
 #define OFFSET (h-1)/2
 
-void drawline(int x0, int y0, int x1, int y1, int color) 
+void Draw_line(int x0, int y0, int x1, int y1, int color) 
 {
 	if (x0 == x1)
 	{
@@ -61,31 +61,31 @@ void drawline(int x0, int y0, int x1, int y1, int color)
 	}
 }
 
-void drawRectXYXY(int x0, int y0, int x1, int y1, int color)
+void Draw_rectXYXY(int x0, int y0, int x1, int y1, int color)
 {
-	drawline(x1, y0, x0, y0, color);
-	drawline(x0, y1, x0, y0, color);
-	drawline(x0, y1, x1, y1, color);
-	drawline(x1, y0, x1, y1, color);
+	Draw_line(x1, y0, x0, y0, color);
+	Draw_line(x0, y1, x0, y0, color);
+	Draw_line(x0, y1, x1, y1, color);
+	Draw_line(x1, y0, x1, y1, color);
 }
 
-void drawRectXYHW(int x, int y, int h, int w, int color)
+void Draw_rectXYHW(int x, int y, int h, int w, int color)
 {
-	drawline(x+h,     y,     x,   y, color);
-	drawline(  x, y+w-1,     x,   y, color);
-	drawline(  x,   y+w, x+h-1, y+w, color);
-	drawline(x+h,     y,   x+h, y+w, color);
+	Draw_line(x+h,     y,     x,   y, color);
+	Draw_line(  x, y+w-1,     x,   y, color);
+	Draw_line(  x,   y+w, x+h-1, y+w, color);
+	Draw_line(x+h,     y,   x+h, y+w, color);
 }
 
-void drawCubeCentered(int x, int y, int h, int color)
+void Draw_cubeCentered(int x, int y, int h, int color)
 {
-	drawline(x-OFFSET, y+OFFSET, x+OFFSET, y+OFFSET, color);
-	drawline(x+OFFSET, y-OFFSET, x+OFFSET, y+OFFSET, color);
-	drawline(x+OFFSET, y-OFFSET, x-OFFSET, y-OFFSET, color);
-	drawline(x-OFFSET, y+OFFSET, x-OFFSET, y-OFFSET, color);
+	Draw_line(x-OFFSET, y+OFFSET, x+OFFSET, y+OFFSET, color);
+	Draw_line(x+OFFSET, y-OFFSET, x+OFFSET, y+OFFSET, color);
+	Draw_line(x+OFFSET, y-OFFSET, x-OFFSET, y-OFFSET, color);
+	Draw_line(x-OFFSET, y+OFFSET, x-OFFSET, y-OFFSET, color);
 }
 
-void drawRectXYHWfill(int x, int y, int h, int w, int color)
+void Draw_rectXYHWfill(int x, int y, int h, int w, int color)
 {
 	for (size_t i = 0; i <= h; i++) {
 		for (size_t j = 0; j <= w; j++) {
