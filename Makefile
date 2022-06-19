@@ -10,13 +10,14 @@ build_image: clean_docker
 
 .PHONY: run
 run: compile
-	mgba-qt -4 out/game.gba
+	mgba-qt -4 $$(pwd)/out/game.gba
+#	NanoBoyAdvance $$(pwd)/out/game.gba
 
 .PHONY: compile
 compile: clean_files 
 	docker run \
-		-v ${PWD}/code:/${USER} \
-		-v ${PWD}/out:/out \
+		-v $$(pwd)/code:/${USER} \
+		-v $$(pwd)/out:/out \
 		$(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev
 
 .PHONY: getincludes
@@ -38,8 +39,8 @@ grit_gB16:
 .PHONY: grit
 grit:  
 	docker run \
-		-v ${PWD}/code:/${USER} \
-		-v ${PWD}/out:/out \
+		-v $$(pwd)/code:/${USER} \
+		-v $$(pwd)/out:/out \
 		$(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev \
 		"/opt/devkitpro/tools/bin/grit" $(img) $(args) "-o$(img)"
 

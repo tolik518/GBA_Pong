@@ -27,6 +27,6 @@ typedef struct
 } Ball;
 
 int Ball_move(Ball *self);
-bool Ball_checkCollisionWithPaddle(const Ball *self, const Paddle *player);
+bool Ball_checkCollisionWithPaddle(const Ball *self, Paddle *player);
 
 #endif

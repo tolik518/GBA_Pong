@@ -6,7 +6,8 @@
 
 void Draw_line(int x0, int y0, int x1, int y1, int color) 
 {
-	if (x0 == x1)
+	m3_line(y0, x0, y1, x1, color);
+	/*if (x0 == x1)
 	{
 		m3_mem[x0][y1] = color;
 		while (true)
@@ -58,7 +59,7 @@ void Draw_line(int x0, int y0, int x1, int y1, int color)
 			error = error + dx;
 			y0 = y0 + sy;
 		}
-	}
+	}*/
 }
 
 void Draw_rectXYXY(int x0, int y0, int x1, int y1, int color)

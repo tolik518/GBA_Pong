@@ -102,7 +102,7 @@ int Ball_move(Ball *self)
 }
 
 //https://austinmorlan.com/posts/pong_clone/
-bool Ball_checkCollisionWithPaddle(const Ball *self, const Paddle *player)
+bool Ball_checkCollisionWithPaddle(const Ball *self,  Paddle *player)
 {
     if (BALL_POSITION_LEFT >= PLAYER_POSITION_RIGHT){
         return false;
@@ -120,5 +120,6 @@ bool Ball_checkCollisionWithPaddle(const Ball *self, const Paddle *player)
         return false;
     }
 
+    player->score = player->score+1;
     return true;
 }

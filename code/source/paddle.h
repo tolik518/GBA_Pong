@@ -11,6 +11,7 @@ typedef struct
     int h; //height
     int w; //width
     int speed;
+    int score;
 } Paddle;
 
 #endif //PONG_PADDLE_H
