@@ -42,67 +42,7 @@ static void MoveTopRight(Ball *self)
     self->y += 1;
 }
 
-//return 1 = left player lost
-//return 2 = right player lost 
-int Ball_move(Ball *self)
-{
-    if (self->dir == BALL_MOVES_TOPLEFT)
-    {
-        MoveTopLeft(self);
-        if (BALL_COLLISION_TOP) {
-            self->dir = BALL_MOVES_BOTTOMLEFT;
-            return 0;
-        }
-        if (BALL_COLLISION_LEFT) {
-            //self->dir = BALL_MOVES_TOPRIGHT;
-            return 1;
-        }
-    }
-
-    if (self->dir == BALL_MOVES_BOTTOMLEFT)
-    {
-        MoveBottomLeft(self);
-        if (BALL_COLLISION_BOTTOM) {
-            self->dir = BALL_MOVES_TOPLEFT;
-            return 0;
-        }
-        if (BALL_COLLISION_LEFT) {
-            //self->dir = BALL_MOVES_BOTTOMRIGHT;
-            return 1;
-        }
-    }
-
-    if (self->dir == BALL_MOVES_BOTTOMRIGHT)
-    {
-        MoveBottomRight(self);
-        if (BALL_COLLISION_BOTTOM) {
-            self->dir = BALL_MOVES_TOPRIGHT;
-            return 0;
-        }
-        if (BALL_COLLISION_RIGHT) {
-            //self->dir = BALL_MOVES_BOTTOMLEFT;
-            return 2;
-        }
-    }
-
-    if (self->dir == BALL_MOVES_TOPRIGHT)
-    {
-        MoveTopRight(self);
-        if (BALL_COLLISION_TOP) {
-            self->dir = BALL_MOVES_BOTTOMRIGHT;
-            return 0;
-        }
-        if (BALL_COLLISION_RIGHT) {
-            //self->dir = BALL_MOVES_TOPLEFT;
-            return 2;
-        }
-    }
-
-    return 0;
-}
-
-//https://austinmorlan.com/posts/pong_clone/
-bool Ball_checkCollisionWithPaddle(const Ball *self,  Paddle *player)
+bool checkCollisionWithPaddle(const Ball *self,  Paddle *player)
 {
     if (BALL_POSITION_LEFT >= PLAYER_POSITION_RIGHT){
         return false;
@@ -122,4 +62,75 @@ bool Ball_checkCollisionWithPaddle(const Ball *self,  Paddle *player)
 
     player->score = player->score+1;
     return true;
+}
+
+//return 1 = left player lost
+//return 2 = right player lost 
+int Ball_moveAndCollide(Ball *self, Paddle *p1, Paddle *p2)
+{
+    if (self->dir == BALL_MOVES_TOPLEFT)
+    {
+        MoveTopLeft(self);
+        if (BALL_COLLISION_TOP) {
+            self->dir = BALL_MOVES_BOTTOMLEFT;
+            return 0;
+        }
+        if (checkCollisionWithPaddle(self, p1)) {
+            self->dir = BALL_MOVES_TOPRIGHT;
+            return 0;
+        }
+        if (BALL_COLLISION_LEFT) {
+            return 1;
+        }
+    }
+
+    if (self->dir == BALL_MOVES_BOTTOMLEFT)
+    {
+        MoveBottomLeft(self);
+        if (BALL_COLLISION_BOTTOM) {
+            self->dir = BALL_MOVES_TOPLEFT;
+            return 0;
+        }
+        if (checkCollisionWithPaddle(self, p1)){
+            self->dir = BALL_MOVES_BOTTOMRIGHT;
+            return 0;
+        }
+        if (BALL_COLLISION_LEFT) {
+            return 1;
+        }
+    }
+
+    if (self->dir == BALL_MOVES_BOTTOMRIGHT)
+    {
+        MoveBottomRight(self);
+        if (BALL_COLLISION_BOTTOM) {
+            self->dir = BALL_MOVES_TOPRIGHT;
+            return 0;
+        }
+        if (checkCollisionWithPaddle(self, p2)){
+            self->dir = BALL_MOVES_BOTTOMLEFT;
+            return 0;
+        }
+        if (BALL_COLLISION_RIGHT) {
+            return 2;
+        }
+    }
+
+    if (self->dir == BALL_MOVES_TOPRIGHT)
+    {
+        MoveTopRight(self);
+        if (BALL_COLLISION_TOP) {
+            self->dir = BALL_MOVES_BOTTOMRIGHT;
+            return 0;
+        }
+        if (checkCollisionWithPaddle(self, p2)){
+            self->dir = BALL_MOVES_TOPLEFT;
+            return 0;
+        }        
+        if (BALL_COLLISION_RIGHT) {
+            return 2;
+        }
+    }
+
+    return 0;
 }

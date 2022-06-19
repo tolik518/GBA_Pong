@@ -4,7 +4,6 @@
 #include "screen.h"
 #include "functions.h"
 
-
 #define BG_COLOR 				RGB8(34, 32, 52)
 #define P1_COLLISION_BOTTOM (p1->x < SCREEN_HEIGHT - 1 - p1->h - p1->speed)
 #define P1_COLLISION_TOP    (p1->x > p1->speed)
@@ -63,32 +62,32 @@ void Game_gameLoop()
 {
 	int _frame = 0;
 	int *frame = &_frame;
-	//Screen_showTitlescreen(frame);
+	Screen_showTitlescreen(frame);
 
     Paddle _p1 = {
-            SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
-            10,
-            PADDLE_HEIGHT,
-            PADDLE_WIDTH,
-			2,
-			1
+        x: SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
+        y: 10,
+        h: PADDLE_HEIGHT,
+        w: PADDLE_WIDTH,
+        speed: 2,
+        score: 0
     };
 
     Paddle _p2 = {
-            SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
-            SCREEN_WIDTH - PADDLE_WIDTH-10,
-            PADDLE_HEIGHT,
-            PADDLE_WIDTH,
-			2,
-			1
+        x: SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
+        y: SCREEN_WIDTH - PADDLE_WIDTH-10,
+        h: PADDLE_HEIGHT,
+        w: PADDLE_WIDTH,
+        speed: 2,
+        score: 0
     };
 
     Ball _ball = {
-            SCREEN_HEIGHT/2 - 1,
-            SCREEN_WIDTH/2 - 1,
-            10,
-            (*frame) % 4,
-            CLR_RED
+        x: SCREEN_HEIGHT/2 - 1,
+        y: SCREEN_WIDTH/2 - 1,
+        h: 10,
+        dir: (*frame) % 4, //randomized direction
+        color: CLR_RED
     };
 
     Paddle *p1 = &_p1;
@@ -144,16 +143,10 @@ void Game_gameLoop()
 			}
 		}
 
-        status = Ball_move(ball);
+        status = Ball_moveAndCollide(ball, p1, p2);
         renderBall(ball);
 		renderPlayer(p1);
 		renderPlayer(p2);	
-
-		bool ballCollisionWithPaddle = Ball_checkCollisionWithPaddle(ball, p1) || Ball_checkCollisionWithPaddle(ball, p2);
-
-		if (ballCollisionWithPaddle) {
-			ball->dir = (ball->dir + 1) % 4;
-		}
 
     	Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
 

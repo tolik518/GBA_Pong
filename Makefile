@@ -30,6 +30,10 @@ getincludes:
 	docker cp $$(cat c.cid):/opt/devkitpro/libtonc/include $$(pwd)/code/
 	-@rm c.cid
 
+.PHONY: grit_all
+grit_all: 
+	for file in code/img/*.png; do make grit img=$${file#*/} args="-ftc -gb -gB16" >> results.out; done
+
 # example "make grit_gB16 img=img/pong_tc.png"
 .PHONY: grit_gB16
 grit_gB16: 
