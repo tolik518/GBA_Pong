@@ -4,7 +4,7 @@
 #include "screen.h"
 #include "functions.h"
 
-#define BG_COLOR 				RGB8(34, 32, 52)
+#define BG_COLOR 			RGB8(34, 32, 52)
 #define P1_COLLISION_BOTTOM (p1->x < SCREEN_HEIGHT - 1 - p1->h - p1->speed)
 #define P1_COLLISION_TOP    (p1->x > p1->speed)
 
@@ -24,8 +24,11 @@ void renderPlayer(const Paddle *p)
 
 void renderBall(const Ball *ball)
 {
-    Draw_cubeCentered(ball->x, ball->y, ball->h+1, BG_COLOR); //clearing the ball outer pixels
-    Draw_cubeCentered(ball->x, ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
+    Draw_cubeCentered(ball->x, ball->y, ball->h+(2*ball->speedX), BG_COLOR); //clearing the ball outer pixels
+	Draw_cubeCentered(ball->x, ball->y, ball->h+(2*ball->speedY), BG_COLOR); //clearing the ball outer pixels
+
+    Draw_cubeCentered(ball->x, ball->y, ball->h-(2*ball->speedX), BG_COLOR); //clearing the ball inner pixels
+	Draw_cubeCentered(ball->x, ball->y, ball->h-(2*ball->speedY), BG_COLOR); //clearing the ball inner pixels
 
     Draw_cubeCentered(ball->x, ball->y, ball->h, ball->color);
 }
@@ -87,7 +90,9 @@ void Game_gameLoop()
         y: SCREEN_WIDTH/2 - 1,
         h: 10,
         dir: (*frame) % 4, //randomized direction
-        color: CLR_RED
+        color: CLR_RED,
+		speedX: 1,
+		speedY: 1
     };
 
     Paddle *p1 = &_p1;
@@ -150,7 +155,7 @@ void Game_gameLoop()
 
     	Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
 
-		Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, CLR_NAVY);
+		Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, RGB8(48,96,130));
 
 		if (status != 0) {
 			Screen_showLosingscreen(frame);

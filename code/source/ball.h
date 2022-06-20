@@ -24,6 +24,8 @@ typedef struct
     int    h;   //height
     int    dir; //direction 0 to 3
     COLOR  color;
+    int    speedX;
+    int    speedY;
 } Ball;
 
 int Ball_moveAndCollide(Ball *self, Paddle *p1, Paddle *p2);

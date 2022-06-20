@@ -39,17 +39,19 @@ bool checkCollisionWithPaddle(const Ball *self,  Paddle *player)
     return true;
 }
 
-static int MoveTopLeft(Ball *self, Paddle *p)
+//return 1 = left player lost
+//return 2 = right player lost 
+static int moveTopLeft(Ball *self, Paddle *player)
 {
-    self->x -= 1;
-    self->y -= 1;
+    self->x -= self->speedX;
+    self->y -= self->speedY;
 
     if (BALL_COLLISION_TOP) {
         self->dir = BALL_MOVES_BOTTOMLEFT;
         return 0;
     }
 
-    if (checkCollisionWithPaddle(self, p)) {
+    if (checkCollisionWithPaddle(self, player)) {
         self->dir = BALL_MOVES_TOPRIGHT;
         return 0;
     }
@@ -61,17 +63,17 @@ static int MoveTopLeft(Ball *self, Paddle *p)
     return 0;
 }
 
-static int MoveBottomLeft(Ball *self, Paddle *p)
+static int moveBottomLeft(Ball *self, Paddle *player)
 {
-    self->x += 1;
-    self->y -= 1;
+    self->x += self->speedX;
+    self->y -= self->speedY;
 
     if (BALL_COLLISION_BOTTOM) {
         self->dir = BALL_MOVES_TOPLEFT;
         return 0;
     }
 
-    if (checkCollisionWithPaddle(self, p)){
+    if (checkCollisionWithPaddle(self, player)){
         self->dir = BALL_MOVES_BOTTOMRIGHT;
         return 0;
     }
@@ -83,17 +85,17 @@ static int MoveBottomLeft(Ball *self, Paddle *p)
     return 0;
 }
 
-static int MoveBottomRight(Ball *self, Paddle *p)
+static int moveBottomRight(Ball *self, Paddle *player)
 {
-    self->x += 1;
-    self->y += 1;
+    self->x += self->speedX;
+    self->y += self->speedY;
 
     if (BALL_COLLISION_BOTTOM) {
         self->dir = BALL_MOVES_TOPRIGHT;
         return 0;
     }
 
-    if (checkCollisionWithPaddle(self, p)){
+    if (checkCollisionWithPaddle(self, player)){
         self->dir = BALL_MOVES_BOTTOMLEFT;
         return 0;
     }
@@ -104,17 +106,17 @@ static int MoveBottomRight(Ball *self, Paddle *p)
     return 0;
 }
 
-static int MoveTopRight(Ball *self, Paddle *p)
+static int moveTopRight(Ball *self, Paddle *player)
 {
-    self->x -= 1;
-    self->y += 1;
+    self->x -= self->speedX;
+    self->y += self->speedY;
 
     if (BALL_COLLISION_TOP) {
         self->dir = BALL_MOVES_BOTTOMRIGHT;
         return 0;
     }
 
-    if (checkCollisionWithPaddle(self, p)){
+    if (checkCollisionWithPaddle(self, player)){
         self->dir = BALL_MOVES_TOPLEFT;
         return 0;
     }     
@@ -126,23 +128,21 @@ static int MoveTopRight(Ball *self, Paddle *p)
     return 0;
 }
 
-//return 1 = left player lost
-//return 2 = right player lost 
 int Ball_moveAndCollide(Ball *self, Paddle *p1, Paddle *p2)
 {
     switch (self->dir)
     {
         case BALL_MOVES_TOPLEFT:
-            return MoveTopLeft(self, p1);
+            return moveTopLeft(self, p1);
 
         case BALL_MOVES_BOTTOMLEFT:
-            return MoveBottomLeft(self, p1);
+            return moveBottomLeft(self, p1);
 
         case BALL_MOVES_BOTTOMRIGHT:
-            return MoveBottomRight(self, p2);
+            return moveBottomRight(self, p2);
 
         case BALL_MOVES_TOPRIGHT:
-            return MoveTopRight(self, p2);            
+            return moveTopRight(self, p2);            
     }
 
     return 0;
