@@ -30,9 +30,20 @@ getincludes:
 	docker cp $$(cat c.cid):/opt/devkitpro/libtonc/include $$(pwd)/code/
 	-@rm c.cid
 
+# dont overwrite existing files
 .PHONY: grit_all
 grit_all: 
-	for file in code/img/*.png; do make grit img=$${file#*/} args="-ftc -gb -gB16" >> results.out; done
+	for file in code/img/*.png; \
+	   do test -f $${file%.*}.h || \
+	   make grit img=$${file#*/} args="-ftc -gb -gB16"; \
+	done
+
+# overwrite existing .c and .h files
+.PHONY: grit_all_force
+grit_all_force: 	
+	for file in code/img/*.png; \
+	    do make grit img=$${file#*/} args="-ftc -gb -gB16"; \
+	done
 
 # example "make grit_gB16 img=img/pong_tc.png"
 .PHONY: grit_gB16
