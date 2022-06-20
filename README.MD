@@ -1,8 +1,7 @@
 # ![GBA Pong](https://returnnull.de/images/pong_github.png) 
 
+Just a version of Pong for Game Boy Advance.  
 
-Pong for Game Boy Advance
-It has some bugs, but ¯\\\_(ツ)_/¯
 
 ![Pong Titlescreen](https://returnnull.de/images/pong-2.png) 
 ![Pong Game](https://returnnull.de/images/pong-1.png?)

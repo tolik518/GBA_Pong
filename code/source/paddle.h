@@ -4,7 +4,7 @@
 #define PADDLE_HEIGHT 30
 #define PADDLE_WIDTH   5
 
-typedef struct
+typedef struct paddle
 {
     int x;
     int y;

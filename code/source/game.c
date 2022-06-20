@@ -1,15 +1,16 @@
+#include "ball.h"
+#include "game.h"
 #include "draw.h"
 #include "paddle.h"
-#include "ball.h"
 #include "screen.h"
 #include "functions.h"
 
 #define BG_COLOR 			RGB8(34, 32, 52)
-#define P1_COLLISION_BOTTOM (p1->x < SCREEN_HEIGHT - 1 - p1->h - p1->speed)
-#define P1_COLLISION_TOP    (p1->x > p1->speed)
+#define P1_COLLISION_BOTTOM (self->p1->x < SCREEN_HEIGHT - 1 - self->p1->h - self->p1->speed)
+#define P1_COLLISION_TOP    (self->p1->x > self->p1->speed)
 
-#define P2_COLLISION_BOTTOM (p2->x < SCREEN_HEIGHT - 1 - p2->h - p2->speed)
-#define P2_COLLISION_TOP    (p2->x > p2->speed)
+#define P2_COLLISION_BOTTOM (self->p2->x < SCREEN_HEIGHT - 1 - self->p2->h - self->p2->speed)
+#define P2_COLLISION_TOP    (self->p2->x > self->p2->speed)
 
 void renderPlayer(const Paddle *p)
 {
@@ -95,15 +96,19 @@ void Game_gameLoop()
 		speedY: 1
     };
 
-    Paddle *p1 = &_p1;
-    Paddle *p2 = &_p2;
-    Ball *ball = &_ball;
+	Game _game = {
+		p1:   &_p1,
+		p2:   &_p2,
+		ball: &_ball
+	};
+
+	Game *self = &_game;
 
 	m3_fill(BG_COLOR);
 
-	renderPlayer(p1);
-	renderPlayer(p2);
-	renderBall(ball);
+	renderPlayer(self->p1);
+	renderPlayer(self->p2);
+	renderBall(self->ball);
 
 	/***************
 	*   main loop  *
@@ -114,48 +119,48 @@ void Game_gameLoop()
 		VBlankIntrWait();
 		key_poll();
 
-		updateScore(p1, p2);
+		updateScore(self->p1, self->p2);
 
 		if (key_is_down(KEY_DOWN)) {
 			if (P1_COLLISION_BOTTOM)
 			{
-				p1->x += p1->speed;
-				renderPlayer(p1);
+				self->p1->x += self->p1->speed;
+				renderPlayer(self->p1);
 			}
 		}
 
 		if (key_is_down(KEY_UP)) {
 			if (P1_COLLISION_TOP)
 			{
-				p1->x -= p1->speed;
-				renderPlayer(p1);
+				self->p1->x -= self->p1->speed;
+				renderPlayer(self->p1);
 			}
 		}
 
 		if (key_is_down(KEY_B)) {
 			if (P2_COLLISION_BOTTOM)
 			{
-				p2->x += p2->speed;
-				renderPlayer(p2);
+				self->p2->x += self->p2->speed;
+				renderPlayer(self->p2);
 			}
 		}
 
 		if (key_is_down(KEY_A)) {
 			if (P2_COLLISION_TOP)
 			{
-				p2->x -= p2->speed;
-				renderPlayer(p2);
+				self->p2->x -= self->p2->speed;
+				renderPlayer(self->p2);
 			}
 		}
 
-        status = Ball_moveAndCollide(ball, p1, p2);
-        renderBall(ball);
-		renderPlayer(p1);
-		renderPlayer(p2);	
+        status = Ball_moveAndCollide(self);
+        renderBall(self->ball);
+		renderPlayer(self->p1);
+		renderPlayer(self->p2);	
 
     	Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
 
-		Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, RGB8(48,96,130));
+		Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, RGB8(48, 96, 130));
 
 		if (status != 0) {
 			Screen_showLosingscreen(frame);

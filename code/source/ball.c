@@ -1,5 +1,6 @@
-#include "paddle.h"
+#include "game.h"
 #include "ball.h"
+#include "paddle.h"
 
 // Collisions of the wall and the walls
 #define BALL_COLLISION_TOP     self->x - (self->h / 2) <= 0
@@ -128,21 +129,24 @@ static int moveTopRight(Ball *self, Paddle *player)
     return 0;
 }
 
-int Ball_moveAndCollide(Ball *self, Paddle *p1, Paddle *p2)
+//game->ball, game->p1, game->p2
+//int Ball_moveAndCollide(Ball *self, Paddle *p1, Paddle *p2)
+int Ball_moveAndCollide(Game *game)
 {
-    switch (self->dir)
+    Ball *self = game->ball;
+    switch (game->ball->dir)
     {
         case BALL_MOVES_TOPLEFT:
-            return moveTopLeft(self, p1);
+            return moveTopLeft(self, game->p1);
 
         case BALL_MOVES_BOTTOMLEFT:
-            return moveBottomLeft(self, p1);
+            return moveBottomLeft(self, game->p1);
 
         case BALL_MOVES_BOTTOMRIGHT:
-            return moveBottomRight(self, p2);
+            return moveBottomRight(self, game->p2);
 
         case BALL_MOVES_TOPRIGHT:
-            return moveTopRight(self, p2);            
+            return moveTopRight(self, game->p2);            
     }
 
     return 0;
