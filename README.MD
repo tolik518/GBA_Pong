@@ -1,9 +1,8 @@
 # ![GBA Pong](https://returnnull.de/images/pong_github.png) 
 
 
-Pong for Game Boy Advance. Work in Progress.
-
-For now there is no way to lose and is only featuring a "play by yourself" mode. So you can't lose for now even if you want to ¯\\\_(ツ)_/¯
+Pong for Game Boy Advance
+It has some bugs, but ¯\\\_(ツ)_/¯
 
 ![Pong Titlescreen](https://returnnull.de/images/pong-2.png) 
 ![Pong Game](https://returnnull.de/images/pong-1.png)
