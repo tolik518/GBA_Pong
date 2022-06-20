@@ -3,16 +3,19 @@ PROJECTNAME=pong
 CONTAINERNAME=dkp_compiler
 USER=$(shell whoami)
 
+# build the docker image
 .PHONY: build_image
 build_image: clean_docker
 	DOCKER_BUILDKIT=1 docker build -f docker/$(CONTAINERNAME)/Dockerfile . \
 	-t $(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev --build-arg uid=1000 --build-arg user=$(USER)
 
+# compile the .gba file and run in in your emulator
 .PHONY: run
 run: compile
 	mgba-qt -4 $$(pwd)/out/game.gba
 #	NanoBoyAdvance $$(pwd)/out/game.gba
 
+# compiles the code into a .gba files, found in the /out folder
 .PHONY: compile
 compile: clean_files 
 	docker run \
@@ -20,6 +23,7 @@ compile: clean_files
 		-v $$(pwd)/out:/out \
 		$(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev
 
+# gets include files from libgba and libtonc to the include folder
 .PHONY: getincludes
 getincludes: 
 	-@docker run \
@@ -59,20 +63,24 @@ grit:
 		$(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev \
 		"/opt/devkitpro/tools/bin/grit" $(img) $(args) "-o$(img)"
 
+# removes files from the out folder and the files from the build folder
 .PHONY: clean_all_files
 clean_all_files: clean_files
 	rm -rf $$(pwd)/code/build
 
+# removes the files from the out folder
 .PHONY: clean_files
 clean_files:
 	rm -f $$(pwd)/out/*.elf
 	rm -f $$(pwd)/out/*.gba
-	rm -f $$(pwd)/out/*.sav
+#	rm -f $$(pwd)/out/*.sav
 
+# deletes the docker images
 .PHONE: clean_docker
 clean_docker:
 	docker image rm -f $(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev
-	
+
+# delete all h files from the include folder (from devkitarm)	
 .PHONY: deleteincludes
 deleteincludes:
 	rm $$(pwd)/code/include/*.h
