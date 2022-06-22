@@ -76,7 +76,7 @@ clean_files:
 #	rm -f $$(pwd)/out/*.sav
 
 # deletes the docker images
-.PHONE: clean_docker
+.PHONY: clean_docker
 clean_docker:
 	docker image rm -f $(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev
 
