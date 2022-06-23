@@ -17,7 +17,7 @@ run: compile
 
 # compiles the code into a .gba files, found in the /out folder
 .PHONY: compile
-compile: clean_files 
+compile: clean_out clean_sound
 	docker run \
 		-v $$(pwd)/code:/${USER} \
 		-v $$(pwd)/out:/out \
@@ -50,8 +50,8 @@ grit_all_force:
 	done
 
 # example "make grit_gB16 img=img/pong_tc.png"
-.PHONY: grit_gB16
-grit_gB16: 
+.PHONY: grit_mode3
+grit_mode3: 
 	make grit img=$(img) args="-ftc -gb -gB16"
 
 # example "make grit img=img/pong_tc.png args="-ftc -gb -gB16""
@@ -65,12 +65,16 @@ grit:
 
 # removes files from the out folder and the files from the build folder
 .PHONY: clean_all_files
-clean_all_files: clean_files
+clean_all_files: clean_out
 	rm -rf $$(pwd)/code/build
 
 # removes the files from the out folder
-.PHONY: clean_files
-clean_files:
+.PHONY: clean_sound
+clean_sound:
+	rm -f $$(pwd)/code/build/soundbank*
+
+.PHONY: clean_out
+clean_out:
 	rm -f $$(pwd)/out/*.elf
 	rm -f $$(pwd)/out/*.gba
 #	rm -f $$(pwd)/out/*.sav

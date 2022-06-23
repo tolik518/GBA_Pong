@@ -5,6 +5,10 @@
 #include "screen.h"
 #include "functions.h"
 
+#include <../include/maxmod.h>
+#include "../build/soundbank.h"
+#include "../build/soundbank_bin.h"
+
 #define BG_COLOR 			RGB8(34, 32, 52)
 #define P1_COLLISION_BOTTOM (self->p1->x < SCREEN_HEIGHT - 1 - self->p1->h - self->p1->speed)
 #define P1_COLLISION_TOP    (self->p1->x > self->p1->speed)
@@ -64,6 +68,8 @@ void updateScore(const Paddle *p1, const Paddle *p2)
 
 void Game_gameLoop()
 {
+	mmStart( MOD_TRACK01, MM_PLAY_LOOP );
+
 	int _frame = 0;
 	int *frame = &_frame;
 	Screen_showTitlescreen(frame);
@@ -116,6 +122,7 @@ void Game_gameLoop()
 	int status = 0; 
 	while (true) 
 	{		
+		mmFrame();
 		VBlankIntrWait();
 		key_poll();
 
