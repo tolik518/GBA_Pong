@@ -73,7 +73,7 @@ void Game_gameLoop()
 {
 	int _frame = 0;
 	int *frame = &_frame;
-	
+
 	Screen_showTitlescreen(frame);
 
 	mmPause();
@@ -127,8 +127,6 @@ void Game_gameLoop()
 	int status = 0; 
 	while (true) 
 	{		
-		mmFrame();
-
 		VBlankIntrWait();
 		key_poll();
 

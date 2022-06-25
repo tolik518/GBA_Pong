@@ -24,7 +24,6 @@ void Screen_showTitlescreen(int *frame)
 
 	while (true) 
 	{
-		mmFrame();
 
 		VBlankIntrWait();
 		key_poll();
@@ -63,7 +62,6 @@ void Screen_showLosingscreen(int *frame)
 
     while (true) 
     {    
-		mmFrame();
 		VBlankIntrWait();
 
         if ((*frame)%15 >= 7) {
