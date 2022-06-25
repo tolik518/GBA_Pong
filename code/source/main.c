@@ -12,7 +12,7 @@ int main(void)
 
 	irq_add(II_VBLANK, mmVBlank);
 
-	mmInitDefault(soundbank_bin, 3);
+	mmInitDefault(soundbank_bin, 8);
 	REG_DISPCNT = DCNT_MODE3 | DCNT_BG2  | DCNT_OBJ;
 
 	Game_gameLoop();

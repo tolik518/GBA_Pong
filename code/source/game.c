@@ -29,11 +29,14 @@ void renderPlayer(const Paddle *p)
 
 void renderBall(const Ball *ball)
 {
-    Draw_cubeCentered(ball->x, ball->y, ball->h+(2*ball->speedX), BG_COLOR); //clearing the ball outer pixels
-	Draw_cubeCentered(ball->x, ball->y, ball->h+(2*ball->speedY), BG_COLOR); //clearing the ball outer pixels
+    Draw_cubeCentered(ball->x, ball->y, ball->h+1, BG_COLOR); //clearing the ball outer pixels
+	Draw_cubeCentered(ball->x, ball->y, ball->h+3, BG_COLOR); //clearing the ball outer pixels
+	Draw_cubeCentered(ball->x, ball->y, ball->h+5, BG_COLOR); //clearing the ball outer pixels
 
-    Draw_cubeCentered(ball->x, ball->y, ball->h-(2*ball->speedX), BG_COLOR); //clearing the ball inner pixels
-	Draw_cubeCentered(ball->x, ball->y, ball->h-(2*ball->speedY), BG_COLOR); //clearing the ball inner pixels
+
+    Draw_cubeCentered(ball->x, ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
+	Draw_cubeCentered(ball->x, ball->y, ball->h-4, BG_COLOR); //clearing the ball inner pixels
+	Draw_cubeCentered(ball->x, ball->y, ball->h-6, BG_COLOR); //clearing the ball inner pixels
 
     Draw_cubeCentered(ball->x, ball->y, ball->h, ball->color);
 }
@@ -68,11 +71,13 @@ void updateScore(const Paddle *p1, const Paddle *p2)
 
 void Game_gameLoop()
 {
-	mmStart( MOD_TRACK01, MM_PLAY_LOOP );
-
 	int _frame = 0;
 	int *frame = &_frame;
+	
 	Screen_showTitlescreen(frame);
+
+	mmPause();
+	mmStop();
 
     Paddle _p1 = {
         x: SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
@@ -99,7 +104,7 @@ void Game_gameLoop()
         dir: (*frame) % 4, //randomized direction
         color: CLR_RED,
 		speedX: 1,
-		speedY: 1
+		speedY: 2
     };
 
 	Game _game = {
@@ -123,6 +128,7 @@ void Game_gameLoop()
 	while (true) 
 	{		
 		mmFrame();
+
 		VBlankIntrWait();
 		key_poll();
 
@@ -170,7 +176,8 @@ void Game_gameLoop()
 		Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, RGB8(48, 96, 130));
 
 		if (status != 0) {
-			Screen_showLosingscreen(frame);
+			break;
 		}
 	}
+	Screen_showLosingscreen(frame);
 }

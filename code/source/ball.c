@@ -2,6 +2,10 @@
 #include "ball.h"
 #include "paddle.h"
 
+#include <../include/maxmod.h>
+#include "../build/soundbank.h"
+#include "../build/soundbank_bin.h"
+
 // Collisions of the wall and the walls
 #define BALL_COLLISION_TOP     self->x - (self->h / 2) <= 0
 #define BALL_COLLISION_LEFT    self->y - (self->h / 2) <= 0
@@ -53,6 +57,7 @@ static int moveTopLeft(Ball *self, Paddle *player)
     }
 
     if (checkCollisionWithPaddle(self, player)) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_TOPRIGHT;
         return 0;
     }
@@ -74,7 +79,8 @@ static int moveBottomLeft(Ball *self, Paddle *player)
         return 0;
     }
 
-    if (checkCollisionWithPaddle(self, player)){
+    if (checkCollisionWithPaddle(self, player)) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_BOTTOMRIGHT;
         return 0;
     }
@@ -96,7 +102,8 @@ static int moveBottomRight(Ball *self, Paddle *player)
         return 0;
     }
 
-    if (checkCollisionWithPaddle(self, player)){
+    if (checkCollisionWithPaddle(self, player)) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_BOTTOMLEFT;
         return 0;
     }
@@ -117,7 +124,8 @@ static int moveTopRight(Ball *self, Paddle *player)
         return 0;
     }
 
-    if (checkCollisionWithPaddle(self, player)){
+    if (checkCollisionWithPaddle(self, player)) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_TOPLEFT;
         return 0;
     }     
