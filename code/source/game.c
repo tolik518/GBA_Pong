@@ -1,22 +1,16 @@
+#include "paddle.h"
 #include "ball.h"
 #include "game.h"
 #include "draw.h"
-#include "paddle.h"
-#include "screen.h"
+#include "scene.h"
 #include "functions.h"
 
 #include <../include/maxmod.h>
 #include "../build/soundbank.h"
 #include "../build/soundbank_bin.h"
 
-#define BG_COLOR 			RGB8(34, 32, 52)
-#define P1_COLLISION_BOTTOM (self->p1->x < SCREEN_HEIGHT - 1 - self->p1->h - self->p1->speed)
-#define P1_COLLISION_TOP    (self->p1->x > self->p1->speed)
 
-#define P2_COLLISION_BOTTOM (self->p2->x < SCREEN_HEIGHT - 1 - self->p2->h - self->p2->speed)
-#define P2_COLLISION_TOP    (self->p2->x > self->p2->speed)
-
-void renderPlayer(const Paddle *p)
+void Game_renderPlayer(const Paddle *p)
 {
 	Draw_rectXYHW(p->x + p->speed, p->y + 1, p->h - (p->speed * 2), p->w - 2, BG_COLOR); //clearing the paddle inner pixels
 	if (p->x > 1) {
@@ -27,7 +21,7 @@ void renderPlayer(const Paddle *p)
 	Draw_rectXYHW(p->x, p->y, p->h, p->w, CLR_CYAN);
 }
 
-void renderBall(const Ball *ball)
+void Game_renderBall(const Ball *ball)
 {
     Draw_cubeCentered(ball->x, ball->y, ball->h+1, BG_COLOR); //clearing the ball outer pixels
 	Draw_cubeCentered(ball->x, ball->y, ball->h+3, BG_COLOR); //clearing the ball outer pixels
@@ -41,7 +35,7 @@ void renderBall(const Ball *ball)
     Draw_cubeCentered(ball->x, ball->y, ball->h, ball->color);
 }
 
-void updateScore(const Paddle *p1, const Paddle *p2)
+void Game_updateScore(const Paddle *p1, const Paddle *p2)
 {
 		tte_init_base(&vwf_default, NULL, NULL);
 		TTC *tc = tte_get_context();
@@ -74,108 +68,11 @@ void Game_gameLoop()
 	int _frame = 0;
 	int *frame = &_frame;
 
-	Screen_showTitlescreen(frame);
+	Scene_showTitlescreen(frame);
 
-	mmPause();
-	mmStop();
+	Scene_showGamescreen(frame);
 
-    Paddle _p1 = {
-        x: SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
-        y: 10,
-        h: PADDLE_HEIGHT,
-        w: PADDLE_WIDTH,
-        speed: 2,
-        score: 0
-    };
-
-    Paddle _p2 = {
-        x: SCREEN_HEIGHT/2 - PADDLE_HEIGHT/2,
-        y: SCREEN_WIDTH - PADDLE_WIDTH-10,
-        h: PADDLE_HEIGHT,
-        w: PADDLE_WIDTH,
-        speed: 2,
-        score: 0
-    };
-
-    Ball _ball = {
-        x: SCREEN_HEIGHT/2 - 1,
-        y: SCREEN_WIDTH/2 - 1,
-        h: 10,
-        dir: (*frame) % 4, //randomized direction
-        color: CLR_RED,
-		speedX: 1,
-		speedY: 2
-    };
-
-	Game _game = {
-		p1:   &_p1,
-		p2:   &_p2,
-		ball: &_ball
-	};
-
-	Game *self = &_game;
-
-	m3_fill(BG_COLOR);
-
-	renderPlayer(self->p1);
-	renderPlayer(self->p2);
-	renderBall(self->ball);
-
-	/***************
-	*   main loop  *
-	***************/
-	int status = 0; 
-	while (true) 
-	{		
-		VBlankIntrWait();
-		key_poll();
-
-		updateScore(self->p1, self->p2);
-
-		if (key_is_down(KEY_DOWN)) {
-			if (P1_COLLISION_BOTTOM)
-			{
-				self->p1->x += self->p1->speed;
-				renderPlayer(self->p1);
-			}
-		}
-
-		if (key_is_down(KEY_UP)) {
-			if (P1_COLLISION_TOP)
-			{
-				self->p1->x -= self->p1->speed;
-				renderPlayer(self->p1);
-			}
-		}
-
-		if (key_is_down(KEY_B)) {
-			if (P2_COLLISION_BOTTOM)
-			{
-				self->p2->x += self->p2->speed;
-				renderPlayer(self->p2);
-			}
-		}
-
-		if (key_is_down(KEY_A)) {
-			if (P2_COLLISION_TOP)
-			{
-				self->p2->x -= self->p2->speed;
-				renderPlayer(self->p2);
-			}
-		}
-
-        status = Ball_moveAndCollide(self);
-        renderBall(self->ball);
-		renderPlayer(self->p1);
-		renderPlayer(self->p2);	
-
-    	Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
-
-		Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, RGB8(48, 96, 130));
-
-		if (status != 0) {
-			break;
-		}
-	}
-	Screen_showLosingscreen(frame);
+	Scene_showLosingscreen(frame);
+	
+	Game_gameLoop();
 }
