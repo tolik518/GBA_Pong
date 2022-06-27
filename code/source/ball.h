@@ -2,7 +2,7 @@
 #define PONG_BALL_H
 
 #include <../include/tonc.h>
-#include "game.h"
+typedef struct game Game;
 
 /*********-TOP-**********\
 *.1....................4.*
@@ -29,6 +29,6 @@ typedef struct ball
     int    speedY;
 } Ball;
 
-int Ball_moveAndCollide(struct game *game);
+int Ball_moveAndCollide(Game *game);
 
 #endif

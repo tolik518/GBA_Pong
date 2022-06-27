@@ -73,6 +73,5 @@ void Game_gameLoop()
 	Scene_showGamescreen(frame);
 
 	Scene_showLosingscreen(frame);
-	
 	Game_gameLoop();
 }
