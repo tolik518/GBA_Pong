@@ -120,14 +120,14 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
 #---------------------------------------------------------------------------------
 $(BUILD):
-	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) BUILDDIR=`cd $(BUILD) && pwd` --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+	[ -d $@ ] || mkdir -p $@
+	$(MAKE) BUILDDIR=`cd $(BUILD) && pwd` -C $(BUILD) -f $(CURDIR)/Makefile
 #@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).elf $(TARGET).gba
+	rm -fr $(BUILD) $(TARGET).elf $(TARGET).gba
 
 
 #---------------------------------------------------------------------------------
@@ -153,15 +153,15 @@ $(OFILES_SOURCES) : $(HFILES)
 #---------------------------------------------------------------------------------
 soundbank.bin soundbank.h : $(AUDIOFILES)
 #---------------------------------------------------------------------------------
-	mmutil $^ -osoundbank.bin -hsoundbank.h
+	mmutil -v $^ -osoundbank.bin -hsoundbank.h
 
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .bin extension
 #---------------------------------------------------------------------------------
 %.bin.o	%_bin.h :	%.bin
 #---------------------------------------------------------------------------------
-	@echo $(notdir $<)
-	@$(bin2o)
+	echo $(notdir $<)
+	$(bin2o)
 
 
 -include $(DEPSDIR)/*.d

@@ -66,7 +66,11 @@ grit:
 # removes files from the out folder and the files from the build folder
 .PHONY: clean_all_files
 clean_all_files: clean_out
-	rm -rf $$(pwd)/code/build
+	rm -rf $$(pwd)/code/build/*.d
+	rm -rf $$(pwd)/code/build/*.o
+	rm -rf $$(pwd)/code/build/*.h
+	rm -rf $$(pwd)/code/build/*.bin
+	rm -rf $$(pwd)/code/build/*.map
 
 # removes the files from the out folder
 .PHONY: clean_sound
