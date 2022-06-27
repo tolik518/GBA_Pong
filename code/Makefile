@@ -153,7 +153,7 @@ $(OFILES_SOURCES) : $(HFILES)
 #---------------------------------------------------------------------------------
 soundbank.bin soundbank.h : $(AUDIOFILES)
 #---------------------------------------------------------------------------------
-	@mmutil $^ -osoundbank.bin -hsoundbank.h
+	mmutil $^ -osoundbank.bin -hsoundbank.h
 
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .bin extension
