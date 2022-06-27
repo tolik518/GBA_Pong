@@ -4,4 +4,7 @@ jobs:
  Compile-GBA:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: build docker image
       - run: make build_image
