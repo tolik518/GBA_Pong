@@ -7,4 +7,4 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
       - name: build docker image
-      - run: make build_image
+        run: make build_image
