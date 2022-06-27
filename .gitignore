@@ -5,6 +5,9 @@ code/build/*.o
 code/build/*.h
 code/build/*.bin
 code/build/*.map
+#!code/build/soundbank.h
+#!code/build/soundbank.bin
+#!code/build/soundbank_bin.h
 code/include
 out/*.elf
 out/*.gba

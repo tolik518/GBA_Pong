@@ -5,7 +5,7 @@ LABEL maintainer="Anatolij 'Tolik518' Vasilev <function@returnnull.de>"
 # get an error that /etc/mtab may not exist 
 RUN test -f /etc/mtab || ln -s /proc/self/mounts /etc/mtab 
 
-RUN apt-get update && apt-get install wget -y
+RUN apt-get update && apt-get install apt-utils -y && apt-get install wget -y 
 
 # Get and install the DevkitPro Pacman 
 RUN wget --progress=dot:giga https://apt.devkitpro.org/install-devkitpro-pacman &&\
@@ -24,7 +24,7 @@ ARG uid
 ARG user
 
 # Get 'make' to execute our Makefile
-RUN apt-get update && apt-get install make -y --no-install-recommends && \
+RUN apt-get update  && apt-get install apt-utils -y  && apt-get install make -y --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
