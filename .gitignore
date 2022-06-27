@@ -1,6 +1,10 @@
 .vscode
 .idea
-code/build/
+code/build/*.d
+code/build/*.o
+code/build/*.h
+code/build/*.bin
+code/build/*.map
 code/include
 out/*.elf
 out/*.gba
