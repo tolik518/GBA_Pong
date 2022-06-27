@@ -30,7 +30,6 @@ RUN apt-get update && apt-get install make -y --no-install-recommends
 COPY --from=dkp_downloader /opt/devkitpro /opt/devkitpro
 
 ### REFACTOR THIS
-RUN apt-get install libc6-dev-amd64 -y
 RUN apt-get install automake -y  
 RUN apt-get install build-essential -y
 
@@ -40,8 +39,7 @@ RUN apt-get install git -y --no-install-recommends  && \
 
 RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/devkitPro/mmutil.git &&\
     cd mmutil &&\
-    echo "mmutil_LDFLAGS  =  -fsanitize=undefined -fsanitize=address" >> Makefile.am &&\
-    echo "mmutil_CPPFLAGS += -fsanitize=undefined -fsanitize=address" >> Makefile.am &&\
+    echo "mmutil_CPPFLAGS += -Og -g" >> Makefile.am &&\
     ./autogen.sh  &&\
     ./configure && make && make install
 ### REFACTOR THIS END
