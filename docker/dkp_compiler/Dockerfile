@@ -39,8 +39,8 @@ RUN apt-get install git -y --no-install-recommends  && \
 
 RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/devkitPro/mmutil.git &&\
     cd mmutil &&\
-    echo "mmutil_LDFLAGS  =  -fsanitize=undefined -fsanitize=address" >> Makefile.am &&\
-    echo "mmutil_CPPFLAGS += -fsanitize=undefined -fsanitize=address -Og -g" >> Makefile.am &&\
+    echo "mmutil_LDFLAGS  =  -fsanitize=undefined -fsanitize=address -Og -g3" >> Makefile.am &&\
+    echo "mmutil_CPPFLAGS += -fsanitize=undefined -fsanitize=address -Og -g3" >> Makefile.am &&\
     ./autogen.sh  &&\
     ./configure && make && make install
 ### REFACTOR THIS END
