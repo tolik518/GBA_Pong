@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - name: build docker image
         run: make build_image
       - name: build gba file
