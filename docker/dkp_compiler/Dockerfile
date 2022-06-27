@@ -43,6 +43,8 @@ RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/devkitPro/mmutil.git &&\
     echo "mmutil_CPPFLAGS += -fsanitize=undefined -fsanitize=address -Og -g3" >> Makefile.am &&\
     ./autogen.sh  &&\
     ./configure && make && make install
+
+RUN touch /usr/local/bin/sampJ328G54AU3.tmp && chmod 0777 /usr/local/bin/sampJ328G54AU3.tmp 
 ### REFACTOR THIS END
 
 # Create new user who has the rights to the out folder where the .gba and .elf will be copied
