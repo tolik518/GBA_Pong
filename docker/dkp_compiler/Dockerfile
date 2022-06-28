@@ -44,8 +44,7 @@ RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/devkitPro/mmutil.git &&\
     ./autogen.sh  &&\
     ./configure && make && make install
 
-RUN touch /usr/local/bin/sampJ328G54AU3.tmp && chmod 777 /usr/local/bin/sampJ328G54AU3.tmp &&\
-    touch /usr/local/bin/songDJ34957FAI.tmp && chmod 777 /usr/local/bin/songDJ34957FAI.tmp 
+RUN chmod 777 /usr/local/bin/
 ### REFACTOR THIS END
 
 # Create new user who has the rights to the out folder where the .gba and .elf will be copied
