@@ -2,12 +2,13 @@ VENDORNAME=returnnull
 PROJECTNAME=pong
 CONTAINERNAME=dkp_compiler
 USER=$(shell whoami)
+UID=$(shell id -u $(USER))
 
 # build the docker image
 .PHONY: build_image
 build_image: clean_docker
 	DOCKER_BUILDKIT=1 docker build -f docker/$(CONTAINERNAME)/Dockerfile . \
-	-t $(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev --build-arg uid=1000 --build-arg user=$(USER)
+	-t $(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev --build-arg uid=$(UID) --build-arg user=$(USER)
 
 # compile the .gba file and run in in your emulator
 .PHONY: run
