@@ -43,15 +43,14 @@ RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/devkitPro/mmutil.git &&\
     echo "mmutil_CPPFLAGS += -fsanitize=undefined -fsanitize=address -g -fno-inline" >> Makefile.am &&\
     ./autogen.sh  &&\
     ./configure && make && make install
-
-RUN chmod 777 /usr/local/bin/
 ### REFACTOR THIS END
 
 # Create new user who has the rights to the out folder where the .gba and .elf will be copied
 RUN useradd -l -d /$user -m -u $uid $user && \
     chown -R $uid /$user && \
     mkdir /out &&  chown -R $uid /out &&\
-    chown -R $uid /opt/devkitpro
+    chown -R $uid /opt/devkitpro &&\
+    chown -R $uid /usr/local/bin/
 
 ENV HOME=/$user
 ENV DEVKITPRO=/opt/devkitpro
