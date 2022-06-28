@@ -10,3 +10,8 @@ jobs:
         run: make build_image
       - name: build gba file
         run: make compile
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: GBA file
+          path: /out/game.gba
