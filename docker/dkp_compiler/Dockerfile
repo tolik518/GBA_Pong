@@ -29,7 +29,24 @@ RUN apt-get update && apt-get install make -y --no-install-recommends
 # Copy the devkitpro from the dkp_downloader to our image
 COPY --from=dkp_downloader /opt/devkitpro /opt/devkitpro
 
+### REFACTOR THIS
+RUN apt-get install automake -y  
+RUN apt-get install build-essential -y
 
+RUN apt-get install git -y --no-install-recommends  && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/devkitPro/mmutil.git &&\
+    cd mmutil &&\
+    echo "mmutil_LDFLAGS  =  -fsanitize=undefined -fsanitize=address -Og -g3" >> Makefile.am &&\
+    echo "mmutil_CPPFLAGS += -fsanitize=undefined -fsanitize=address -Og -g3" >> Makefile.am &&\
+    ./autogen.sh  &&\
+    ./configure && make && make install
+
+RUN touch /usr/local/bin/sampJ328G54AU3.tmp && chmod 777 /usr/local/bin/sampJ328G54AU3.tmp &&\
+    touch /usr/local/bin/songDJ34957FAI.tmp && chmod 777 /usr/local/bin/songDJ34957FAI.tmp 
+### REFACTOR THIS END
 
 # Create new user who has the rights to the out folder where the .gba and .elf will be copied
 RUN useradd -l -d /$user -m -u $uid $user && \
