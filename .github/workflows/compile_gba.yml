@@ -11,9 +11,9 @@ jobs:
       - name: build gba file
         run: make compile
       - name: show content of /out folder
-        run: ls /out    
+        run: ls out    
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: GBA file
-          path: /out/game.gba
+          path: out/game.gba
