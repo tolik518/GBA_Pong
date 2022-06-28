@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install make -y --no-install-recommends
 COPY --from=dkp_downloader /opt/devkitpro /opt/devkitpro
 
 ### REFACTOR THIS
+RUN apt-get install strace -y  
 RUN apt-get install automake -y  
 RUN apt-get install build-essential -y
 

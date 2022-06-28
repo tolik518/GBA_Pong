@@ -153,7 +153,8 @@ $(OFILES_SOURCES) : $(HFILES)
 #---------------------------------------------------------------------------------
 soundbank.bin soundbank.h : $(AUDIOFILES)
 #---------------------------------------------------------------------------------
-	/usr/local/bin/mmutil -v $^ -osoundbank.bin -hsoundbank.h
+	strace -o foo.trace mmutil -v $^ -osoundbank.bin -hsoundbank.h ||\
+	cat foo.trace
 
 #---------------------------------------------------------------------------------
 # This rule links in binary data with the .bin extension
