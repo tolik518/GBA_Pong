@@ -1,4 +1,5 @@
 # ![GBA Pong](https://returnnull.de/images/pong_github.png) 
+[![Compiled GBA file](https://github.com/tolik518/GBA_Pong/actions/workflows/compile_gba.yml/badge.svg?event=push)](https://github.com/tolik518/GBA_Pong/actions/workflows/compile_gba.yml)
 
 Just a version of Pong for Game Boy Advance.  
 
@@ -7,7 +8,7 @@ Just a version of Pong for Game Boy Advance.
 ![Pong Game](https://returnnull.de/images/pong-1.png?)
 ![Pong Game](https://returnnull.de/images/pong-3.png)
 
-## How to Start Development (on Linux)
+## How to start development (on Linux)
 * prerequisites: get [docker](https://www.docker.com/get-started/) and [docker-compose](https://docs.docker.com/compose/install/)
 * clone repository
 * go to the root of the repository
@@ -16,11 +17,18 @@ Just a version of Pong for Game Boy Advance.
 * recommended: install [mGBA](https://mgba.io/downloads.html) 
 
 
-## How to Start the Game
+## How to start the Game
 * use `make compile` to compile the source (you'll find it in the /out folder)
 * or use `make run` to compile and run the compiled game
     * probably needs to be configured for your emulator in case you use an other than `visualboyadvance`
 * `make cleanup` to delete all the build data again
+
+## Whats my goal of that project?
+* to learn C basics
+* to learn basics of the GBA
+* gaining experience in DevOps ([Docker](https://github.com/tolik518/GBA_Pong/blob/master/docker/dkp_compiler/Dockerfile), [CI/CD](https://github.com/tolik518/GBA_Pong/blob/master/.github/workflows/compile_gba.yml))
+* gaining practice with my [gba docker template](https://github.com/tolik518/GBA_Dev_Docker_Template)
+
 
 _____
 
