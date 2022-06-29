@@ -2,7 +2,7 @@ name: Compile GBA
 on: [push]
 jobs:
  Compile-GBA:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
