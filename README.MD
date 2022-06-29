@@ -8,6 +8,10 @@ Just a version of Pong for Game Boy Advance.
 ![Pong Game](https://returnnull.de/images/pong-1.png?)
 ![Pong Game](https://returnnull.de/images/pong-3.png)
 
+Download: [Nightly builds](https://returnnull.de/github/GBA_Pong/)  
+Naming scema: `[DATE CREATED]_[COMMIT HASH].zip`
+____________
+
 ## How to start development (on Linux)
 * prerequisites: get [docker](https://www.docker.com/get-started/) and [docker-compose](https://docs.docker.com/compose/install/)
 * clone repository
