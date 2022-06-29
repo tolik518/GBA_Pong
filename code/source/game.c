@@ -9,7 +9,6 @@
 #include "../build/soundbank.h"
 #include "../build/soundbank_bin.h"
 
-
 void Game_renderPlayer(const Paddle *p)
 {
 	Draw_rectXYHW(p->x + p->speed, p->y + 1, p->h - (p->speed * 2), p->w - 2, BG_COLOR); //clearing the paddle inner pixels
