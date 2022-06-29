@@ -6,13 +6,10 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
-
       - name: build docker image
         run: make build_image
-
       - name: build gba file
         run: make compile
-
       - name: Upload artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v3
