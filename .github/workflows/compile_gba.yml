@@ -12,10 +12,11 @@ jobs:
 
       - name: build gba file
         run: make compile
-        
+
       - name: Upload artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v3
         with:
           name: game.gba
           path: out/game.gba
+          if-no-files-found: error
