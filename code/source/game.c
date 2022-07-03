@@ -34,32 +34,37 @@ void Game_renderBall(const Ball *ball)
     Draw_cubeCentered(ball->x, ball->y, ball->h, ball->color);
 }
 
+void initializeScoreWriter()
+{
+	tte_init_base(&vwf_default, NULL, NULL);
+	TTC *tc = tte_get_context();
+	tc->dst = m3_surface;
+
+	tc->cattr[TTE_INK] = CLR_GRAY;
+	tc->cattr[TTE_SHADOW] = CLR_ORANGE;
+	tc->cattr[TTE_PAPER] = BG_COLOR;
+
+	tc->marginRight = M3_WIDTH;
+	tc->marginBottom = M3_HEIGHT;
+	tc->drawgProc = bmp16_drawg_default;
+
+	tc->eraseProc= bmp16_erase;
+}
+
 void Game_updateScore(const Paddle *p1, const Paddle *p2)
 {
-		tte_init_base(&vwf_default, NULL, NULL);
-		TTC *tc = tte_get_context();
-		tc->dst = m3_surface;
+	initializeScoreWriter();
 
-		tc->cattr[TTE_INK] = CLR_GRAY;
-		tc->cattr[TTE_SHADOW] = CLR_ORANGE;
-		tc->cattr[TTE_PAPER] = BG_COLOR;
+	char text[10];
+	tte_set_pos((SCREEN_WIDTH/2)-17-(digits(p1->score)*3), 10);
+	sprintf(text, "%*d", 5, p1->score);
+	tte_erase_rect((SCREEN_WIDTH/2)-30, 10, (SCREEN_WIDTH/2), 20);
+	tte_write(text);
 
-		tc->marginRight = M3_WIDTH;
-		tc->marginBottom = M3_HEIGHT;
-		tc->drawgProc = bmp16_drawg_default;
-
-		tc->eraseProc= bmp16_erase;
-	
-		char text[10];
-		tte_set_pos((SCREEN_WIDTH/2)-17-(digits(p1->score)*3), 10);
-		sprintf(text, "%*d", 5, p1->score);
-		tte_erase_rect((SCREEN_WIDTH/2)-30, 10, (SCREEN_WIDTH/2), 20);
-		tte_write(text);
-
-		tte_set_pos((SCREEN_WIDTH/2)+5, 10);
-		sprintf(text, "%-4d", p2->score);
-		tte_erase_rect((SCREEN_WIDTH/2)+5, 10, (SCREEN_WIDTH/2)+40, 20);
-		tte_write(text);
+	tte_set_pos((SCREEN_WIDTH/2)+5, 10);
+	sprintf(text, "%-4d", p2->score);
+	tte_erase_rect((SCREEN_WIDTH/2)+5, 10, (SCREEN_WIDTH/2)+40, 20);
+	tte_write(text);
 }
 
 void Game_gameLoop()
@@ -72,5 +77,4 @@ void Game_gameLoop()
 	Scene_showGamescreen(frame);
 
 	Scene_showLosingscreen(frame);
-	Game_gameLoop();
 }

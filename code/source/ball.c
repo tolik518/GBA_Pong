@@ -40,7 +40,6 @@ bool checkCollisionWithPaddle(const Ball *self,  Paddle *player)
         return false;
     }
 
-    player->score = player->score+1;
     return true;
 }
 
