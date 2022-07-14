@@ -6,7 +6,7 @@
 
 void Draw_line(int x0, int y0, int x1, int y1, int color) 
 {
-	m3_line(y0, x0, y1, x1, color);
+	m4_line(y0, x0, y1, x1, color);
 	/*if (x0 == x1)
 	{
 		m3_mem[x0][y1] = color;
@@ -90,7 +90,7 @@ void Draw_rectXYHWfill(int x, int y, int h, int w, int color)
 {
 	for (size_t i = 0; i <= h; i++) {
 		for (size_t j = 0; j <= w; j++) {
-			m3_mem[x+i][y+j] = color;
+			m4_mem[x+i][y+j] = color;
 		}
 	}
 }

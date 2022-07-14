@@ -18,7 +18,7 @@ int main(void)
 	irq_add(II_VBLANK, on_vblank);
 
 	mmInitDefault((mm_addr)soundbank_bin, 8);
-	REG_DISPCNT = DCNT_MODE3 | DCNT_BG2  | DCNT_OBJ;
+	REG_DISPCNT = DCNT_MODE4 | DCNT_PAGE | DCNT_BG2;
 
 	Game_gameLoop();
 

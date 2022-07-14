@@ -40,20 +40,24 @@ getincludes:
 grit_all: 
 	for file in code/img/*.png; \
 	   do test -f $${file%.*}.h || \
-	   make grit img=$${file#*/} args="-ftc -gb -gB16"; \
+	   make grit_mode4 img=$${file#*/}; \
 	done
 
 # overwrite existing .c and .h files
 .PHONY: grit_all_force
 grit_all_force: 	
 	for file in code/img/*.png; \
-	    do make grit img=$${file#*/} args="-ftc -gb -gB16"; \
+	    do make grit_mode4 img=$${file#*/}; \
 	done
 
-# example "make grit_gB16 img=img/pong_tc.png"
+# example "make grit_mode3 img=img/pong_tc.png"
 .PHONY: grit_mode3
 grit_mode3: 
 	make grit img=$(img) args="-ftc -gb -gB16"
+
+.PHONY: grit_mode4
+grit_mode4: 
+	make grit img=$(img) args="-ftc -gb -gB8 -aw 240 -ah 160"
 
 # example "make grit img=img/pong_tc.png args="-ftc -gb -gB16""
 .PHONY: grit

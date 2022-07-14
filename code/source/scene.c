@@ -23,10 +23,10 @@ void Scene_showTitlescreen(int *frame)
 	mmStop();
 	mmStart( MOD_TRACK01, MM_PLAY_LOOP );
 
-	tonccpy(m3_mem, title_0Bitmap, title_0BitmapLen);
+	tonccpy(m4_mem_back, title_0Bitmap, title_0BitmapLen);
+	tonccpy(pal_bg_mem, title_0Pal, title_0PalLen);
 
 	bool title_1 = false;
-
 	while (true) 
 	{
 		VBlankIntrWait();
@@ -35,7 +35,7 @@ void Scene_showTitlescreen(int *frame)
 		//kids, dont do animations like this at home
 		if (!title_1 && (*frame) > 60) //after roughly 1 second
 		{
-			tonccpy(m3_mem, title_1Bitmap, title_1BitmapLen);
+			tonccpy(m4_mem_back, title_1Bitmap, title_1BitmapLen);
 			title_1 = true;
 		}
 
@@ -43,11 +43,11 @@ void Scene_showTitlescreen(int *frame)
 		{
 			if ((*frame)%15 >= 7) { //show 4 times a second
 			
-				tonccpy(m3_mem, title_2Bitmap, title_2BitmapLen);
+				tonccpy(m4_mem_back, title_2Bitmap, title_2BitmapLen);
 			} 
 
 			if ((*frame)%15 < 7) {
-				tonccpy(m3_mem, title_3Bitmap, title_3BitmapLen);
+				tonccpy(m4_mem_back, title_3Bitmap, title_3BitmapLen);
 			}
 
 			if (key_is_down(KEY_ANY)) {
@@ -72,11 +72,11 @@ void Scene_showLosingscreen(int *frame)
 		key_poll();
 
         if ((*frame)%15 >= 7) {
-            tonccpy(m3_mem, you_lost_0Bitmap, you_lost_0BitmapLen);
+            tonccpy(m4_mem_back, you_lost_0Bitmap, you_lost_0BitmapLen);
         } 
 
         if ((*frame)%15 < 7) {
-            tonccpy(m3_mem, you_lost_1Bitmap, you_lost_1BitmapLen);
+            tonccpy(m4_mem_back, you_lost_1Bitmap, you_lost_1BitmapLen);
         }
 		//((*frame)-entry_frame) > 30 just makes sure so you dont instantly skip the screen
 		if (key_is_down(KEY_ANY) && ((*frame)-entry_frame) > 30) {
@@ -97,7 +97,7 @@ void Scene_showGamescreen(int *frame)
 		mmPause();
 		mmStop();
 
-		m3_fill(BG_COLOR);
+		m4_fill(BG_COLOR);
 		/***************
 		*   main loop  *
 		***************/
