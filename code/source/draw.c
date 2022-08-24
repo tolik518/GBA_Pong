@@ -4,62 +4,9 @@
 
 #define OFFSET (h-1)/2
 
-void Draw_line(int x0, int y0, int x1, int y1, int color) 
+void Draw_line(int x0, int y0, int x1, int y1, int color)
 {
 	m4_line(y0, x0, y1, x1, color);
-	/*if (x0 == x1)
-	{
-		m3_mem[x0][y1] = color;
-		while (true)
-		{
-			if (y0<y1) m3_mem[x0][++y0] = color;
-			if (y0>y1) m3_mem[x0][++y1] = color;
-			if (y0 == y1) break;
-		}
-		return;
-	}
-
-	if (y0 == y1)
-	{
-		m3_mem[x0][y1] = color;
-		while (true)
-		{
-			if (x0<x1) m3_mem[++x0][y0] = color;
-			if (x0>x1) m3_mem[++x1][y0] = color;
-			if (x0 == x1) break;
-		}
-		return;
-	}
-
-	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-	int dx = diff(x0, x1);
-	int dy = -diff(y0, y1);
-	s8  sx = x0 < x1 ? 1 : -1;
-	s8  sy = y0 < y1 ? 1 : -1;
-	int error = dx + dy;
-
-	while(true)
-	{
-		m3_mem[x0][y0] = color;
-
-		if (x0 == x1 && y0 == y1) break;
-
-		int e2 = 2 * error;
-
-		if (e2 >= dy) 
-		{
-			if (x0 == x1) break;
-			error = error + dy;
-			x0 = x0 + sx;
-		}
-
-		if (e2 <= dx) 
-		{
-			if (y0 == y1) break;
-			error = error + dx;
-			y0 = y0 + sy;
-		}
-	}*/
 }
 
 void Draw_rectXYXY(int x0, int y0, int x1, int y1, int color)
