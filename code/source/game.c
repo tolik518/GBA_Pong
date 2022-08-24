@@ -17,7 +17,7 @@ void Game_renderPlayer(const Paddle *p)
 	} 
 	Draw_rectXYHW(p->x + p->h, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels below the paddle
 
-	Draw_rectXYHW(p->x, p->y, p->h, p->w, CLR_CYAN);
+	Draw_rectXYHW(p->x, p->y, p->h, p->w, 19);
 }
 
 void Game_renderBall(const Ball *ball)
@@ -53,7 +53,9 @@ void initializeScoreWriter()
 
 void Game_updateScore(const Paddle *p1, const Paddle *p2)
 {
-	initializeScoreWriter();
+	//initializeScoreWriter();
+
+	tte_init_bmp_default(DCNT_MODE4);
 
 	char text[10];
 	tte_set_pos((SCREEN_WIDTH/2)-17-(digits(p1->score)*3), 10);
@@ -74,7 +76,7 @@ void Game_gameLoop()
 
 	Scene_showTitlescreen(frame);
 
-	//Scene_showGamescreen(frame);
+	Scene_showGamescreen(frame);
 
-	//Scene_showLosingscreen(frame);
+	Scene_showLosingscreen(frame);
 }

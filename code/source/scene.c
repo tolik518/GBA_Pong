@@ -128,7 +128,7 @@ void Scene_showGamescreen(int *frame)
 			y: SCREEN_WIDTH/2 - 1,
 			h: 10,
 			dir: randDir, 
-			color: CLR_RED,
+			color: 27,
 			speedX: 1,
 			speedY: 2
 		};
