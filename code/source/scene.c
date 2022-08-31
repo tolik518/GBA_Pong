@@ -17,7 +17,7 @@
 #include "../build/soundbank.h"
 #include "../build/soundbank_bin.h"
 
-void Scene_showTitlescreen(int *frame) 
+void Scene_showTitlescreen(int *frame)
 {
 	mmPause();
 	mmStop();
@@ -27,7 +27,7 @@ void Scene_showTitlescreen(int *frame)
 	tonccpy(pal_bg_mem, title_0Pal, title_0PalLen);
 
 	bool title_1 = false;
-	while (true) 
+	while (true)
 	{
 		VBlankIntrWait();
 		key_poll();
@@ -42,9 +42,8 @@ void Scene_showTitlescreen(int *frame)
 		if ((*frame) > 120) //after roughly 2 seconds
 		{
 			if ((*frame)%15 >= 7) { //show 4 times a second
-			
 				tonccpy(m4_mem_back, title_2Bitmap, title_2BitmapLen);
-			} 
+			}
 
 			if ((*frame)%15 < 7) {
 				tonccpy(m4_mem_back, title_3Bitmap, title_3BitmapLen);
@@ -66,14 +65,14 @@ void Scene_showLosingscreen(int *frame)
 
 	int entry_frame = *frame; //save the current frame
 
-    while (true) 
-    {    
+    while (true)
+    {
 		VBlankIntrWait();
 		key_poll();
 
         if ((*frame)%15 >= 7) {
             tonccpy(m4_mem_back, you_lost_0Bitmap, you_lost_0BitmapLen);
-        } 
+        }
 
         if ((*frame)%15 < 7) {
             tonccpy(m4_mem_back, you_lost_1Bitmap, you_lost_1BitmapLen);
@@ -91,6 +90,8 @@ void Scene_showGamescreen(int *frame)
 {
 	int scoreP1 = 0;
 	int scoreP2 = 0;
+
+	int randDir = 0;
 
 	while(true)
 	{
@@ -121,13 +122,13 @@ void Scene_showGamescreen(int *frame)
 		};
 
 		//randomized direction
-		int randDir = ((*frame + randDir) % 4);
+		randDir = ((*frame + randDir) % 4);
 
 		Ball _ball = {
 			x: SCREEN_HEIGHT/2 - 1,
 			y: SCREEN_WIDTH/2 - 1,
 			h: 10,
-			dir: randDir, 
+			dir: randDir,
 			color: 27,
 			speedX: 1,
 			speedY: 2
@@ -141,9 +142,9 @@ void Scene_showGamescreen(int *frame)
 
 		Game *self = &_game;
 
-		int status = 0; 
-		while (true) 
-		{		
+		int status = 0;
+		while (true)
+		{
 			VBlankIntrWait();
 			key_poll();
 
@@ -184,7 +185,7 @@ void Scene_showGamescreen(int *frame)
 			status = Ball_moveAndCollide(self);
 			Game_renderBall(self->ball);
 			Game_renderPlayer(self->p1);
-			Game_renderPlayer(self->p2);	
+			Game_renderPlayer(self->p2);
 
 			Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
 
@@ -196,6 +197,6 @@ void Scene_showGamescreen(int *frame)
 				break;
 			}
 			(*frame)++;
-		}		
+		}
 	}
 }
