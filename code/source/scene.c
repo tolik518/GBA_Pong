@@ -21,7 +21,7 @@ void Scene_showTitlescreen(int *frame)
 {
 	mmPause();
 	mmStop();
-	mmStart( MOD_TRACK01, MM_PLAY_LOOP );
+	mmStart(MOD_TRACK01, MM_PLAY_LOOP);
 
 	tonccpy(m4_mem_back, title_0Bitmap, title_0BitmapLen);
 	tonccpy(pal_bg_mem, title_0Pal, title_0PalLen);
@@ -187,9 +187,9 @@ void Scene_showGamescreen(int *frame)
 			Game_renderPlayer(self->p1);
 			Game_renderPlayer(self->p2);
 
-			Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
+			Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, 27); // white border around the screen
 
-			Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, RGB8(48, 96, 130));
+			Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, 23);
 
 			if (status != 0) {
 				if (status == 1) scoreP2++;

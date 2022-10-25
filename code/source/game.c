@@ -14,7 +14,7 @@ void Game_renderPlayer(const Paddle *p)
 	Draw_rectXYHW(p->x + p->speed, p->y + 1, p->h - (p->speed * 2), p->w - 2, BG_COLOR); //clearing the paddle inner pixels
 	if (p->x > 1) {
 		Draw_rectXYHW(p->x - p->speed, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels above the paddle
-	} 
+	}
 	Draw_rectXYHW(p->x + p->h, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels below the paddle
 
 	Draw_rectXYHW(p->x, p->y, p->h, p->w, 19);
@@ -40,20 +40,20 @@ void initializeScoreWriter()
 	TTC *tc = tte_get_context();
 	tc->dst = m4_surface;
 
-	tc->cattr[TTE_INK] = CLR_GRAY;
-	tc->cattr[TTE_SHADOW] = CLR_ORANGE;
+	tc->cattr[TTE_INK] = 28;
+	tc->cattr[TTE_SHADOW] = 27;
 	tc->cattr[TTE_PAPER] = BG_COLOR;
 
 	tc->marginRight = M4_WIDTH;
 	tc->marginBottom = M4_HEIGHT;
 	tc->drawgProc = bmp8_drawg_default;
 
-	tc->eraseProc= bmp8_erase;
+	tc->eraseProc = bmp8_erase;
 }
 
 void Game_updateScore(const Paddle *p1, const Paddle *p2)
 {
-	//initializeScoreWriter();
+	initializeScoreWriter();
 
 	tte_init_bmp_default(DCNT_MODE4);
 
