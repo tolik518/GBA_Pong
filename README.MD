@@ -1,14 +1,15 @@
-# ![GBA Pong](https://returnnull.de/images/pong_github.png) 
+# ![GBA Pong](https://returnnull.de/images/pong_github.png)
 [![Compiled GBA file](https://github.com/tolik518/GBA_Pong/actions/workflows/compile_gba.yml/badge.svg?event=push)](https://github.com/tolik518/GBA_Pong/actions/workflows/compile_gba.yml)
 
-Just a version of Pong for Game Boy Advance.  
+Just a version of Pong for Game Boy Advance.
 
 
-![Pong Titlescreen](https://returnnull.de/images/pong-2.png) 
-![Pong Game](https://returnnull.de/images/pong-1.png?)
-![Pong Game](https://returnnull.de/images/pong-3.png)
+![Pong Titlescreen](/.github/readme/pong-2.png)
+![Pong Game](/.github/readme/pong-1.png?)
+![Pong Game](/.github/readme/pong-3.png)
 
-Download: [Nightly builds](https://returnnull.de/github/GBA_Pong/)  
+
+Download: [Nightly builds](https://returnnull.de/github/GBA_Pong/)
 Naming scema: `[DATE CREATED]_[COMMIT HASH].zip`
 ____________
 
@@ -18,7 +19,10 @@ ____________
 * go to the root of the repository
 * build docker image with `make build_image`
 * optional: get include files with `make getincludes` (`make deleteincludes` to remove them)
-* recommended: install [mGBA](https://mgba.io/downloads.html) 
+* recommended: install [mGBA](https://mgba.io/downloads.html)
+
+![Installing the project and compiling the game](/.github/readme/demo.gif)
+
 
 
 ## How to start the Game
@@ -43,7 +47,7 @@ _____
     * for example: `tonccpy(m3_mem, pong_logoBitmap, 76800)`
 _____
 
-###### Repository created and maintained by [tolik518](https://github.com/tolik518). 
-###### Dockerfile based on the [Dockerfile](https://github.com/nchowning/dockerfiles/blob/master/switchdev/Dockerfile) from [Nathan Chowning](https://github.com/nchowning).  
-###### The Makefile is a mashup of the original from [devkitPro](https://github.com/devkitPro/gba-examples) and from [coranac](https://www.coranac.com/tonc/text/toc.htm).   
+###### Repository created and maintained by [tolik518](https://github.com/tolik518).
+###### Dockerfile based on the [Dockerfile](https://github.com/nchowning/dockerfiles/blob/master/switchdev/Dockerfile) from [Nathan Chowning](https://github.com/nchowning).
+###### The Makefile is a mashup of the original from [devkitPro](https://github.com/devkitPro/gba-examples) and from [coranac](https://www.coranac.com/tonc/text/toc.htm).
 ###### The 'Pong'-font is based on [this BitmapFont](https://github.com/ianhan/BitmapFonts/blob/main/font-pack/4138906425_29cbc92641_o.png) by [Ian Hanschen](https://github.com/ianhan)
