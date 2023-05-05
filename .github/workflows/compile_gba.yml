@@ -3,9 +3,6 @@ on: [push]
 jobs:
  Compile-GBA:
     runs-on: ubuntu-20.04
-    container:
-      image: devkitpro/devkitarm:latest
-
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
