@@ -14,7 +14,7 @@ void Game_renderPlayer(const Paddle *p)
 	Draw_rectXYHW(p->x + p->speed, p->y + 1, p->h - (p->speed * 2), p->w - 2, BG_COLOR); //clearing the paddle inner pixels
 	if (p->x > 1) {
 		Draw_rectXYHW(p->x - p->speed, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels above the paddle
-	} 
+	}
 	Draw_rectXYHW(p->x + p->h, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels below the paddle
 
 	Draw_rectXYHW(p->x, p->y, p->h, p->w, CLR_CYAN);
@@ -26,7 +26,6 @@ void Game_renderBall(const Ball *ball)
 	Draw_cubeCentered(ball->x, ball->y, ball->h+3, BG_COLOR); //clearing the ball outer pixels
 	Draw_cubeCentered(ball->x, ball->y, ball->h+5, BG_COLOR); //clearing the ball outer pixels
 
-
     Draw_cubeCentered(ball->x, ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
 	Draw_cubeCentered(ball->x, ball->y, ball->h-4, BG_COLOR); //clearing the ball inner pixels
 	Draw_cubeCentered(ball->x, ball->y, ball->h-6, BG_COLOR); //clearing the ball inner pixels
@@ -34,7 +33,7 @@ void Game_renderBall(const Ball *ball)
     Draw_cubeCentered(ball->x, ball->y, ball->h, ball->color);
 }
 
-void initializeScoreWriter()
+struct TTC *initializeScoreWriter()
 {
 	tte_init_base(&vwf_default, NULL, NULL);
 	TTC *tc = tte_get_context();
@@ -49,11 +48,13 @@ void initializeScoreWriter()
 	tc->drawgProc = bmp16_drawg_default;
 
 	tc->eraseProc= bmp16_erase;
+
+	return tc;
 }
 
 void Game_updateScore(const Paddle *p1, const Paddle *p2)
 {
-	initializeScoreWriter();
+	(void) initializeScoreWriter();
 
 	char text[10];
 	tte_set_pos((SCREEN_WIDTH/2)-17-(digits(p1->score)*3), 10);
@@ -67,14 +68,34 @@ void Game_updateScore(const Paddle *p1, const Paddle *p2)
 	tte_write(text);
 }
 
+void Game_setPauseText()
+{
+	(void) initializeScoreWriter();
+
+	//show text centered on the screen
+	tte_set_pos((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-6);
+	tte_erase_rect((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+30, (SCREEN_HEIGHT/2)+6);
+
+	tte_write("PRESS START");
+}
+
+void Game_removePauseText()
+{
+	initializeScoreWriter()->cattr[TTE_INK] = BG_COLOR;
+
+	//show text centered on the screen
+	tte_set_pos((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-6);
+	tte_erase_rect((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+30, (SCREEN_HEIGHT/2)+6);
+
+	tte_write("PRESS START");
+}
+
 void Game_gameLoop()
 {
 	int _frame = 0;
 	int *frame = &_frame;
 
 	Scene_showTitlescreen(frame);
-
 	Scene_showGamescreen(frame);
-
 	Scene_showLosingscreen(frame);
 }

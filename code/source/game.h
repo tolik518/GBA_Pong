@@ -16,12 +16,16 @@ typedef struct game
     struct paddle *p1;
     struct paddle *p2;
     struct ball   *ball;
-} Game; 
+    int           isRunning;
+} Game;
 
 
 void Game_gameLoop();
 void Game_renderPlayer(const Paddle *p);
 void Game_renderBall(const Ball *ball);
 void Game_updateScore(const Paddle *p1, const Paddle *p2);
+void Game_removePauseText();
+void Game_setPauseText();
+
 
 #endif

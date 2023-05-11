@@ -17,17 +17,19 @@
 #include "../build/soundbank.h"
 #include "../build/soundbank_bin.h"
 
-void Scene_showTitlescreen(int *frame) 
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2);
+
+void Scene_showTitlescreen(int *frame)
 {
 	mmPause();
 	mmStop();
 	mmStart( MOD_TRACK01, MM_PLAY_LOOP );
 
-	tonccpy(m3_mem, title_0Bitmap, title_0BitmapLen);
+	tonccpy(m3_mem, title_0Bitmap, title_0BitmapLen); //Background
 
 	bool title_1 = false;
 
-	while (true) 
+	while (true)
 	{
 		VBlankIntrWait();
 		key_poll();
@@ -35,19 +37,19 @@ void Scene_showTitlescreen(int *frame)
 		//kids, dont do animations like this at home
 		if (!title_1 && (*frame) > 60) //after roughly 1 second
 		{
-			tonccpy(m3_mem, title_1Bitmap, title_1BitmapLen);
+			tonccpy(m3_mem, title_1Bitmap, title_1BitmapLen); //Background + Logo
 			title_1 = true;
 		}
 
 		if ((*frame) > 120) //after roughly 2 seconds
 		{
 			if ((*frame)%15 >= 7) { //show 4 times a second
-			
-				tonccpy(m3_mem, title_2Bitmap, title_2BitmapLen);
-			} 
+
+				tonccpy(m3_mem, title_2Bitmap, title_2BitmapLen);  //Background + Logo + Paddles
+			}
 
 			if ((*frame)%15 < 7) {
-				tonccpy(m3_mem, title_3Bitmap, title_3BitmapLen);
+				tonccpy(m3_mem, title_3Bitmap, title_3BitmapLen);  //Background + Logo + Press Start
 			}
 
 			if (key_is_down(KEY_ANY)) {
@@ -66,14 +68,14 @@ void Scene_showLosingscreen(int *frame)
 
 	int entry_frame = *frame; //save the current frame
 
-    while (true) 
-    {    
+    while (true)
+    {
 		VBlankIntrWait();
 		key_poll();
 
         if ((*frame)%15 >= 7) {
             tonccpy(m3_mem, you_lost_0Bitmap, you_lost_0BitmapLen);
-        } 
+        }
 
         if ((*frame)%15 < 7) {
             tonccpy(m3_mem, you_lost_1Bitmap, you_lost_1BitmapLen);
@@ -127,7 +129,7 @@ void Scene_showGamescreen(int *frame)
 			x: SCREEN_HEIGHT/2 - 1,
 			y: SCREEN_WIDTH/2 - 1,
 			h: 10,
-			dir: randDir, 
+			dir: randDir,
 			color: CLR_RED,
 			speedX: 1,
 			speedY: 2
@@ -136,14 +138,22 @@ void Scene_showGamescreen(int *frame)
 		Game _game = {
 			p1:   &_p1,
 			p2:   &_p2,
-			ball: &_ball
+			ball: &_ball,
+			isRunning: false
 		};
 
 		Game *self = &_game;
 
-		int status = 0; 
-		while (true) 
-		{		
+		_runGame(self, frame, &scoreP1, &scoreP2);
+	}
+}
+
+
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2)
+{
+	int status = 0;
+		while (true)
+		{
 			VBlankIntrWait();
 			key_poll();
 
@@ -181,21 +191,38 @@ void Scene_showGamescreen(int *frame)
 				}
 			}
 
-			status = Ball_moveAndCollide(self);
+			Game_renderBall(self->ball);
+			if (self->isRunning) {
+				status = Ball_moveAndCollide(self);
+			}
 			Game_renderBall(self->ball);
 			Game_renderPlayer(self->p1);
-			Game_renderPlayer(self->p2);	
+			Game_renderPlayer(self->p2);
 
-			Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
+			Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 2, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
 
-			Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, RGB8(48, 96, 130));
+			Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1,               SCREEN_WIDTH/2  , RGB8(48, 96, 130));
+
+			// pause the game after a goal and wait for user input
+			if (!self->isRunning)
+			{
+
+				Game_setPauseText();
+
+				if (key_is_down(KEY_START))
+				{
+					Game_removePauseText();
+					self->isRunning = true;
+				}
+
+				continue;
+			}
 
 			if (status != 0) {
-				if (status == 1) scoreP2++;
-				if (status == 2) scoreP1++;
+				if (status == 1) (*scoreP2)++;
+				if (status == 2) (*scoreP1)++;
 				break;
 			}
 			(*frame)++;
-		}		
-	}
+		}
 }
