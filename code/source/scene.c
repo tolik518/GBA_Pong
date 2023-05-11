@@ -10,6 +10,7 @@
 #include "../img/title_1.h"
 #include "../img/title_2.h"
 #include "../img/title_3.h"
+#include "../img/title_name.h"
 #include "../img/you_lost_0.h"
 #include "../img/you_lost_1.h"
 
@@ -25,7 +26,7 @@ void Scene_showTitlescreen(int *frame)
 	mmStop();
 	mmStart( MOD_TRACK01, MM_PLAY_LOOP );
 
-	tonccpy(m3_mem, title_0Bitmap, title_0BitmapLen); //Background
+	tonccpy(m3_mem, title_nameBitmap, title_nameBitmapLen); // name
 
 	bool title_1 = false;
 
@@ -35,7 +36,12 @@ void Scene_showTitlescreen(int *frame)
 		key_poll();
 
 		//kids, dont do animations like this at home
-		if (!title_1 && (*frame) > 60) //after roughly 1 second
+		if (!title_1 && (*frame) > 90) //after 1.5 second
+		{
+			tonccpy(m3_mem, title_0Bitmap, title_0BitmapLen); //Background
+		}
+
+		if (!title_1 && (*frame) > 45)//after bit less than 1 second
 		{
 			tonccpy(m3_mem, title_1Bitmap, title_1BitmapLen); //Background + Logo
 			title_1 = true;
@@ -123,6 +129,7 @@ void Scene_showGamescreen(int *frame)
 		};
 
 		//randomized direction
+		#pragma GCC diagnostic ignored "-Wuninitialized"
 		int randDir = (((*frame) + randDir) % 4);
 
 		Ball _ball = {
