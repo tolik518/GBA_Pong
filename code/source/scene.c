@@ -206,9 +206,9 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 			Game_renderPlayer(self->p1);
 			Game_renderPlayer(self->p2);
 
-			Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 2, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
+			Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH - 1, CLR_WHITE); // white border around the screen
 
-			Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1,               SCREEN_WIDTH/2  , RGB8(48, 96, 130));
+			Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2  , RGB8(48, 96, 130));
 
 			// pause the game after a goal and wait for user input
 			if (!self->isRunning)
