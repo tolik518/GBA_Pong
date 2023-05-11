@@ -41,13 +41,13 @@ void Scene_showTitlescreen(int *frame)
 			tonccpy(m3_mem, title_0Bitmap, title_0BitmapLen); //Background
 		}
 
-		if (!title_1 && (*frame) > 45)//after bit less than 1 second
+		if (!title_1 && (*frame) > 110)//after ~2 seconds
 		{
 			tonccpy(m3_mem, title_1Bitmap, title_1BitmapLen); //Background + Logo
 			title_1 = true;
 		}
 
-		if ((*frame) > 120) //after roughly 2 seconds
+		if ((*frame) > 180) //after roughly 1.5 seconds
 		{
 			if ((*frame)%30 >= 15) { //show 2 times a second
 
