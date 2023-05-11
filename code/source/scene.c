@@ -17,7 +17,7 @@
 #include "../build/soundbank.h"
 #include "../build/soundbank_bin.h"
 
-void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2);
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNuber);
 
 void Scene_showTitlescreen(int *frame)
 {
@@ -43,12 +43,12 @@ void Scene_showTitlescreen(int *frame)
 
 		if ((*frame) > 120) //after roughly 2 seconds
 		{
-			if ((*frame)%15 >= 7) { //show 4 times a second
+			if ((*frame)%30 >= 15) { //show 2 times a second
 
 				tonccpy(m3_mem, title_2Bitmap, title_2BitmapLen);  //Background + Logo + Paddles
 			}
 
-			if ((*frame)%15 < 7) {
+			if ((*frame)%30 < 15) {
 				tonccpy(m3_mem, title_3Bitmap, title_3BitmapLen);  //Background + Logo + Press Start
 			}
 
@@ -123,7 +123,7 @@ void Scene_showGamescreen(int *frame)
 		};
 
 		//randomized direction
-		int randDir = ((*frame + randDir) % 4);
+		int randDir = (((*frame) + randDir) % 4);
 
 		Ball _ball = {
 			x: SCREEN_HEIGHT/2 - 1,
@@ -144,12 +144,12 @@ void Scene_showGamescreen(int *frame)
 
 		Game *self = &_game;
 
-		_runGame(self, frame, &scoreP1, &scoreP2);
+		_runGame(self, frame, &scoreP1, &scoreP2, randDir);
 	}
 }
 
 
-void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2)
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNuber)
 {
 	int status = 0;
 		while (true)
@@ -175,7 +175,13 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2)
 				}
 			}
 
-			if (key_is_down(KEY_B)) {
+			/* 	since player 2 is the AI, we dont need to check for key presses
+				instead it will try follow the ball position which is stored in self->ball, but not alway successfully
+				some randomness is added to the AI to make it more interesting from *frame and randomNuber
+				the movement should still be smooth and not too random
+			*/
+
+			if (self->p2->x + self->p2->h/2 < self->ball->x + self->ball->h/2 - 5) {
 				if (P2_COLLISION_BOTTOM)
 				{
 					self->p2->x += self->p2->speed;
@@ -183,13 +189,14 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2)
 				}
 			}
 
-			if (key_is_down(KEY_A)) {
+			if (self->p2->x + self->p2->h/2 > self->ball->x + self->ball->h/2 + 5) {
 				if (P2_COLLISION_TOP)
 				{
 					self->p2->x -= self->p2->speed;
 					Game_renderPlayer(self->p2);
 				}
 			}
+
 
 			Game_renderBall(self->ball);
 			if (self->isRunning) {
