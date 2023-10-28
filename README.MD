@@ -5,7 +5,7 @@ Just a version of Pong for Game Boy Advance.
 
 
 ![Pong Titlescreen](/.github/readme/pong-2.png)
-![Pong Game](/.github/readme/pong-1.png?)
+![Pong Game](/.github/readme/pong-1.png)
 ![Pong Game](/.github/readme/pong-3.png)
 
 
