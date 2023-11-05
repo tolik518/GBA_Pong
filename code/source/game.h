@@ -4,7 +4,7 @@
 typedef struct paddle Paddle;
 typedef struct ball   Ball;
 
-#define BG_COLOR 			RGB8(34, 32, 52)
+#define BG_COLOR 			1
 #define P1_COLLISION_BOTTOM (self->p1->x < SCREEN_HEIGHT - 1 - self->p1->h - self->p1->speed)
 #define P1_COLLISION_TOP    (self->p1->x > self->p1->speed)
 

@@ -17,54 +17,53 @@ void Game_renderPlayer(const Paddle *p)
 	}
 	Draw_rectXYHW(p->x + p->h, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels below the paddle
 
-	Draw_rectXYHW(p->x, p->y, p->h, p->w, CLR_CYAN);
+	Draw_rectXYHW(p->x, p->y, p->h, p->w, 19);
 }
 
 void Game_renderBall(const Ball *ball)
 {
-    Draw_cubeCentered(ball->x, ball->y, ball->h+1, BG_COLOR); //clearing the ball outer pixels
-	Draw_cubeCentered(ball->x, ball->y, ball->h+3, BG_COLOR); //clearing the ball outer pixels
-	Draw_cubeCentered(ball->x, ball->y, ball->h+5, BG_COLOR); //clearing the ball outer pixels
+    Draw_cubeCentered(ball->x, ball->y, ball->h+2, BG_COLOR); //clearing the ball outer pixels
+	Draw_cubeCentered(ball->x, ball->y, ball->h+4, BG_COLOR); //clearing the ball outer pixels
 
     Draw_cubeCentered(ball->x, ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
 	Draw_cubeCentered(ball->x, ball->y, ball->h-4, BG_COLOR); //clearing the ball inner pixels
-	Draw_cubeCentered(ball->x, ball->y, ball->h-6, BG_COLOR); //clearing the ball inner pixels
 
     Draw_cubeCentered(ball->x, ball->y, ball->h, ball->color);
 }
 
 struct TTC *initializeScoreWriter()
 {
-	tte_init_base(&vwf_default, NULL, NULL);
+	tte_init_base(&vwf_default, bmp8_drawg_default, bmp8_erase);
 	TTC *tc = tte_get_context();
-	tc->dst = m3_surface;
+	tc->dst = m4_surface;
 
-	tc->cattr[TTE_INK] = CLR_GRAY;
-	tc->cattr[TTE_SHADOW] = CLR_ORANGE;
+	tc->cattr[TTE_INK] = 21;
+	tc->cattr[TTE_SHADOW] = 27;
 	tc->cattr[TTE_PAPER] = BG_COLOR;
 
-	tc->marginRight = M3_WIDTH;
-	tc->marginBottom = M3_HEIGHT;
-	tc->drawgProc = bmp16_drawg_default;
+	tc->marginRight = M4_WIDTH;
+	tc->marginBottom = M4_HEIGHT;
+	tc->drawgProc = bmp8_drawg_default;
 
-	tc->eraseProc= bmp16_erase;
-
+	tc->eraseProc= bmp8_erase;
 	return tc;
 }
 
 void Game_updateScore(const Paddle *p1, const Paddle *p2)
 {
 	(void) initializeScoreWriter();
+	//REG_DISPCNT ^= DCNT_PAGE;
 
 	char text[10];
-	tte_set_pos((SCREEN_WIDTH/2)-17-(digits(p1->score)*3), 10);
-	sprintf(text, "%*d", 5, p1->score);
 	tte_erase_rect((SCREEN_WIDTH/2)-30, 10, (SCREEN_WIDTH/2), 20);
+	tte_set_pos((SCREEN_WIDTH/2)-17-(digits(p1->score)*3), 10);
+	tte_get_shadow();
+	sprintf(text, "%*d", 5, p1->score);
 	tte_write(text);
 
+	tte_erase_rect((SCREEN_WIDTH/2)+5, 10, (SCREEN_WIDTH/2)+40, 20);
 	tte_set_pos((SCREEN_WIDTH/2)+5, 10);
 	sprintf(text, "%-4d", p2->score);
-	tte_erase_rect((SCREEN_WIDTH/2)+5, 10, (SCREEN_WIDTH/2)+40, 20);
 	tte_write(text);
 }
 
@@ -81,13 +80,7 @@ void Game_setPauseText()
 
 void Game_removePauseText()
 {
-	initializeScoreWriter()->cattr[TTE_INK] = BG_COLOR;
-
-	//show text centered on the screen
-	tte_set_pos((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-6);
-	tte_erase_rect((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+30, (SCREEN_HEIGHT/2)+6);
-
-	tte_write("PRESS START");
+	tte_erase_rect((SCREEN_WIDTH/2)-40, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+40, (SCREEN_HEIGHT/2)+6);
 }
 
 void Game_gameLoop()

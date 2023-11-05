@@ -10,7 +10,7 @@ void on_vblank() {
 	mmFrame();
 }
 
-int main(void) 
+int main(void)
 {
     irq_init(NULL);
 	irq_enable(II_VBLANK);
@@ -18,7 +18,8 @@ int main(void)
 	irq_add(II_VBLANK, on_vblank);
 
 	mmInitDefault((mm_addr)soundbank_bin, 8);
-	REG_DISPCNT = DCNT_MODE3 | DCNT_BG2  | DCNT_OBJ;
+	REG_DISPCNT = DCNT_MODE4 | DCNT_PAGE | DCNT_BG2;
+	REG_DISPCNT ^= DCNT_PAGE;
 
 	Game_gameLoop();
 

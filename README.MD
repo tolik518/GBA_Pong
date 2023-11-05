@@ -44,7 +44,7 @@ _____
 * use `make grit img=[your path starting from the, excluding, /code folder] args="[your arguments]"`
     * for example: `make grit img=img/pong_logo.png args="-ftc -gb -gB16"`
 * after that just include the generated file and memcopy your image to the vram
-    * for example: `tonccpy(m3_mem, pong_logoBitmap, 76800)`
+    * for example: `tonccpy(m4_mem, pong_logoBitmap, 76800)`
 _____
 
 ###### Repository created and maintained by [tolik518](https://github.com/tolik518).
