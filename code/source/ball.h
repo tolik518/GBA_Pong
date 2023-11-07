@@ -22,6 +22,8 @@ typedef struct ball
 {
     int    x;
     int    y;
+    int    prev_x; // crucial for cleaing up previous pixels
+    int    prev_y;
     int    h;   //height
     int    dir; //direction 0 to 3
     COLOR  color;

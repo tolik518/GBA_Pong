@@ -14,7 +14,6 @@ build_image: clean_docker
 .PHONY: run
 run: compile
 	mgba-qt -4 $$(pwd)/out/game.gba
-#	NanoBoyAdvance $$(pwd)/out/game.gba
 
 # compiles the code into a .gba files, found in the /out folder
 .PHONY: compile
@@ -26,7 +25,7 @@ compile: clean_out clean_sound
 
 # gets include files from libgba and libtonc to the include folder
 .PHONY: getincludes
-getincludes: 
+getincludes:
 	-@docker run \
 		--cidfile=c.cid \
 		$(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev \
@@ -37,27 +36,32 @@ getincludes:
 
 # dont overwrite existing files
 .PHONY: grit_all
-grit_all: 
+grit_all:
 	for file in code/img/*.png; \
 	   do test -f $${file%.*}.h || \
-	   make grit img=$${file#*/} args="-ftc -gb -gB16"; \
+	   make grit_mode4 img=$${file#*/}; \
 	done
 
 # overwrite existing .c and .h files
 .PHONY: grit_all_force
-grit_all_force: 	
+grit_all_force:
 	for file in code/img/*.png; \
-	    do make grit img=$${file#*/} args="-ftc -gb -gB16"; \
+	    do make grit_mode4 img=$${file#*/}; \
 	done
 
-# example "make grit_gB16 img=img/pong_tc.png"
+# example "make grit_mode3 img=img/pong_tc.png"
 .PHONY: grit_mode3
-grit_mode3: 
+grit_mode3:
 	make grit img=$(img) args="-ftc -gb -gB16"
+
+# example "make grit_mode4 img=img/pong_tc.png"
+.PHONY: grit_mode4
+grit_mode4:
+	make grit img=$(img) args="-ftc -gb -gB8 -aw 240 -ah 160"
 
 # example "make grit img=img/pong_tc.png args="-ftc -gb -gB16""
 .PHONY: grit
-grit:  
+grit:
 	docker run \
 		-v $$(pwd)/code:/${USER} \
 		-v $$(pwd)/out:/out \
@@ -89,7 +93,7 @@ clean_out:
 clean_docker:
 	docker image rm -f $(VENDORNAME)/$(PROJECTNAME)/$(CONTAINERNAME):dev
 
-# delete all h files from the include folder (from devkitarm)	
+# delete all h files from the include folder (from devkitarm)
 .PHONY: deleteincludes
 deleteincludes:
 	rm $$(pwd)/code/include/*.h
