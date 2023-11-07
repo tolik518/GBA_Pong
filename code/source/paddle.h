@@ -8,6 +8,8 @@ typedef struct paddle
 {
     int x;
     int y;
+    int prev_x; // crucial for cleaing up previous pixels
+    int prev_y;
     int h; //height
     int w; //width
     int speed;

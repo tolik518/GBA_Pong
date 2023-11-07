@@ -6,29 +6,25 @@
 #include "functions.h"
 
 #include <../include/maxmod.h>
-#include "../build/soundbank.h"
-#include "../build/soundbank_bin.h"
+#include <../build/soundbank.h>
+#include <../build/soundbank_bin.h>
 
-void Game_renderPlayer(const Paddle *p)
+void Game_renderPlayer(Paddle *p)
 {
-	Draw_rectXYHW(p->x + p->speed, p->y + 1, p->h - (p->speed * 2), p->w - 2, BG_COLOR); //clearing the paddle inner pixels
-	if (p->x > 1) {
-		Draw_rectXYHW(p->x - p->speed, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels above the paddle
-	}
-	Draw_rectXYHW(p->x + p->h, p->y, p->speed, p->w, BG_COLOR);   //clearing pixels below the paddle
-
+	Draw_rectXYHW(p->prev_x, p->prev_y, p->h, p->w, BG_COLOR);
 	Draw_rectXYHW(p->x, p->y, p->h, p->w, 19);
+
+	p->prev_x = p->x;
+    p->prev_y = p->y;
 }
 
-void Game_renderBall(const Ball *ball)
+void Game_renderBall(Ball *ball)
 {
-    Draw_cubeCentered(ball->x, ball->y, ball->h+2, BG_COLOR); //clearing the ball outer pixels
-	Draw_cubeCentered(ball->x, ball->y, ball->h+4, BG_COLOR); //clearing the ball outer pixels
-
-    Draw_cubeCentered(ball->x, ball->y, ball->h-2, BG_COLOR); //clearing the ball inner pixels
-	Draw_cubeCentered(ball->x, ball->y, ball->h-4, BG_COLOR); //clearing the ball inner pixels
-
+    Draw_cubeCentered(ball->prev_x, ball->prev_y, ball->h, BG_COLOR);
     Draw_cubeCentered(ball->x, ball->y, ball->h, ball->color);
+
+    ball->prev_x = ball->x;
+    ball->prev_y = ball->y;
 }
 
 struct TTC *initializeScoreWriter()
