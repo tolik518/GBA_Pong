@@ -1,0 +1,3 @@
+[submodule "code/include/gba-link-connection-c"]
+	path = code/include/gba-link-connection-c
+	url = https://git.sr.ht/~exelotl/gba-link-connection-c
