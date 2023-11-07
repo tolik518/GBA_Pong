@@ -3,8 +3,8 @@
 #include "paddle.h"
 
 #include <../include/maxmod.h>
-#include "../build/soundbank.h"
-#include "../build/soundbank_bin.h"
+#include <../build/soundbank.h>
+#include <../build/soundbank_bin.h>
 
 // Collisions of the wall and the walls
 #define BALL_COLLISION_TOP     self->x - (self->h / 2) <= 0
@@ -44,13 +44,14 @@ bool checkCollisionWithPaddle(const Ball *self,  Paddle *player)
 }
 
 //return 1 = left player lost
-//return 2 = right player lost 
+//return 2 = right player lost
 static int moveTopLeft(Ball *self, Paddle *player)
 {
     self->x -= self->speedX;
     self->y -= self->speedY;
 
     if (BALL_COLLISION_TOP) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_BOTTOMLEFT;
         return 0;
     }
@@ -74,6 +75,7 @@ static int moveBottomLeft(Ball *self, Paddle *player)
     self->y -= self->speedY;
 
     if (BALL_COLLISION_BOTTOM) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_TOPLEFT;
         return 0;
     }
@@ -97,6 +99,7 @@ static int moveBottomRight(Ball *self, Paddle *player)
     self->y += self->speedY;
 
     if (BALL_COLLISION_BOTTOM) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_TOPRIGHT;
         return 0;
     }
@@ -119,6 +122,7 @@ static int moveTopRight(Ball *self, Paddle *player)
     self->y += self->speedY;
 
     if (BALL_COLLISION_TOP) {
+        mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_BOTTOMRIGHT;
         return 0;
     }
@@ -127,7 +131,7 @@ static int moveTopRight(Ball *self, Paddle *player)
         mmEffect( SFX_CLICK );
         self->dir = BALL_MOVES_TOPLEFT;
         return 0;
-    }     
+    }
 
     if (BALL_COLLISION_RIGHT) {
         return 2;
@@ -153,7 +157,7 @@ int Ball_moveAndCollide(Game *game)
             return moveBottomRight(self, game->p2);
 
         case BALL_MOVES_TOPRIGHT:
-            return moveTopRight(self, game->p2);            
+            return moveTopRight(self, game->p2);
     }
 
     return 0;
