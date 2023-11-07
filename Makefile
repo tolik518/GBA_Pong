@@ -14,7 +14,6 @@ build_image: clean_docker
 .PHONY: run
 run: compile
 	mgba-qt -4 $$(pwd)/out/game.gba
-#	NanoBoyAdvance $$(pwd)/out/game.gba
 
 # compiles the code into a .gba files, found in the /out folder
 .PHONY: compile
@@ -50,15 +49,15 @@ grit_all_force:
 	    do make grit_mode4 img=$${file#*/}; \
 	done
 
-# example "make grit_gB16 img=img/pong_tc.png"
+# example "make grit_mode3 img=img/pong_tc.png"
 .PHONY: grit_mode3
 grit_mode3:
 	make grit img=$(img) args="-ftc -gb -gB16"
 
+# example "make grit_mode4 img=img/pong_tc.png"
 .PHONY: grit_mode4
 grit_mode4:
 	make grit img=$(img) args="-ftc -gb -gB8 -aw 240 -ah 160"
-
 
 # example "make grit img=img/pong_tc.png args="-ftc -gb -gB16""
 .PHONY: grit
