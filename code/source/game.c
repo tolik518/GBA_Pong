@@ -8,6 +8,8 @@
 #include <../include/maxmod.h>
 #include <../build/soundbank.h>
 #include <../build/soundbank_bin.h>
+#include <../include/gba-link-connection-c/link_connection.h>
+
 
 void Game_renderPlayer(Paddle *p)
 {
@@ -79,12 +81,12 @@ void Game_removePauseText()
 	tte_erase_rect((SCREEN_WIDTH/2)-40, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+40, (SCREEN_HEIGHT/2)+6);
 }
 
-void Game_gameLoop()
+void Game_gameLoop(LinkConnection *conn)
 {
 	int _frame = 0;
 	int *frame = &_frame;
 
 	Scene_showTitlescreen(frame);
-	Scene_showGamescreen(frame);
+	Scene_showGamescreen(frame, conn);
 	Scene_showLosingscreen(frame);
 }
