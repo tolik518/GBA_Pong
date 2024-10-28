@@ -3,6 +3,7 @@
 
 typedef struct paddle Paddle;
 typedef struct ball   Ball;
+typedef struct LinkConnection LinkConnection;
 
 #define BG_COLOR 			1
 
@@ -19,7 +20,7 @@ typedef struct game
 } Game;
 
 
-void Game_gameLoop();
+void Game_gameLoop(LinkConnection *conn);
 void Game_renderPlayer(Paddle *p);
 void Game_renderBall(Ball *ball);
 void Game_updateScore(const Paddle *p1, const Paddle *p2);
