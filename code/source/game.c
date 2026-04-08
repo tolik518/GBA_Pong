@@ -86,7 +86,9 @@ void Game_gameLoop(LinkConnection *conn)
 	int _frame = 0;
 	int *frame = &_frame;
 
-	Scene_showTitlescreen(frame);
+	lc_activate(conn);
+
+	Scene_showTitlescreen(frame, conn);
 	Scene_showGamescreen(frame, conn);
 	Scene_showLosingscreen(frame);
 }
