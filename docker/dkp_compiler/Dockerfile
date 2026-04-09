@@ -9,7 +9,12 @@ ARG uid
 ARG user
 
 # Get 'make' to execute our Makefile
-RUN apt-get update && apt-get install make -y --no-install-recommends && \
+# Debian Buster is EOL; redirect to the archive mirror before updating
+RUN printf 'deb http://archive.debian.org/debian buster main\n\
+deb http://archive.debian.org/debian-security buster/updates main\n' \
+    > /etc/apt/sources.list && \
+    apt-get -o Acquire::Check-Valid-Until=false update && \
+    apt-get install make -y --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
