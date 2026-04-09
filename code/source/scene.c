@@ -114,28 +114,28 @@ void Scene_showTitlescreen(int *frame, LinkConnection *conn)
 		VBlankIntrWait();
 		key_poll();
 
-		//kids, dont do animations like this at home
-		if (!title_1 && (*frame) > 90) //after 1.5 second
+		// Kids, (probably) don't do animations like this at home
+		if (!title_1 && (*frame) > 90) // After 1.5 seconds
 		{
 			tonccpy(pal_bg_mem,  title_0Pal,  title_0PalLen);
-			tonccpy(m4_mem, title_0Bitmap, title_0BitmapLen); //Background
+			tonccpy(m4_mem, title_0Bitmap, title_0BitmapLen); // Background
 		}
 
-		if (!title_1 && (*frame) > 110)//after ~2 seconds
+		if (!title_1 && (*frame) > 110) // After ~2 seconds
 		{
-			tonccpy(m4_mem, title_1Bitmap, title_1BitmapLen); //Background + Logo
+			tonccpy(m4_mem, title_1Bitmap, title_1BitmapLen); // Background + Logo
 			title_1 = true;
 		}
 
-		if ((*frame) > 180) //after roughly 1.5 seconds
+		if ((*frame) > 180) // After roughly 1.5 seconds
 		{
-			if ((*frame)%30 >= 15) { //show 2 times a second
+			if ((*frame)%30 >= 15) { // Show 2 times a second
 
-				tonccpy(m4_mem, title_2Bitmap, title_2BitmapLen);  //Background + Logo + Paddles
+				tonccpy(m4_mem, title_2Bitmap, title_2BitmapLen);  // Background + Logo + Paddles
 			}
 
 			if ((*frame)%30 < 15) {
-				tonccpy(m4_mem, title_3Bitmap, title_3BitmapLen);  //Background + Logo + Press Start
+				tonccpy(m4_mem, title_3Bitmap, title_3BitmapLen);  // Background + Logo + Press Start
 			}
 
 			// Draw indicator right after bitmap copy so it can't be overwritten
@@ -167,8 +167,8 @@ void Scene_showLosingscreen(int *frame)
 {
 	mmPause();
 	mmStop();
-
-	int entry_frame = *frame; //save the current frame
+	// Save the current frame
+	int entry_frame = *frame;
 
     while (true)
     {
@@ -182,7 +182,7 @@ void Scene_showLosingscreen(int *frame)
         if ((*frame)%15 < 7) {
             tonccpy(m4_mem, you_lost_1Bitmap, you_lost_1BitmapLen);
         }
-		//((*frame)-entry_frame) > 30 just makes sure so you dont instantly skip the screen
+		// ((*frame)-entry_frame) > 30 just makes sure so you dont instantly skip the screen
 		if (key_is_down(KEY_ANY) && ((*frame)-entry_frame) > 30) {
 			break;
 		}
@@ -201,7 +201,7 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 	{
 		mmPause();
 		mmStop();
-		//mmStart(MOD_TRACK01, MM_PLAY_LOOP);
+		// mmStart(MOD_TRACK01, MM_PLAY_LOOP);
 
 		Draw_fill(BG_COLOR);
 
@@ -223,7 +223,7 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 			score: scoreP2
 		};
 
-		//randomized direction
+		// Randomized direction
 		#pragma GCC diagnostic ignored "-Wuninitialized"
 		int randDir = (((*frame) + randDir) % 4);
 
@@ -280,13 +280,14 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 		bool is_master = !is_multiplayer || (conn->state.current_player_id == MASTER_ID);
 		u8 opponent_player_id = 1 - conn->state.current_player_id;
 
-		// --- Read all incoming messages from opponent ---
+		// --- Read incoming messages from opponent ---
 		// Message types (tagged u16, none overlap 0x0000 or 0xFFFF):
-		//   0x8000 | ball_x   — authoritative ball x position (master → slave)
-		//   0x4000 | ball_y   — authoritative ball y position (master → slave)
-		//   0x2000 | dir      — initial ball direction for round sync (master → slave)
-		//   0x0800            — player ready handshake
-		//   1 / 2 / 3        — paddle direction TOP/IDLE/BOTTOM
+		//   MSG_BALL_X (0x8000) | authoritative ball x position (master -> slave)
+		//   MSG_BALL_Y (0x4000) | authoritative ball y position (master -> slave)
+		//   MSG_DIR    (0x2000) | initial ball direction for round sync (master -> slave)
+		//   MSG_READY  (0x0800) | player ready handshake
+		//   MSG_PING   (0x0400) | title screen keepalive (ignored in game)
+		//        1 / 2 / 3      | paddle direction TOP/IDLE/BOTTOM
 		u16 remote_input = IDLE;
 		if (is_multiplayer) {
 			while (lc_has_message(conn, opponent_player_id)) {
@@ -303,7 +304,7 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 				} else if (msg & MSG_READY) {
 					remote_ready = true;
 				} else if (msg & MSG_PING) {
-					// Title screen ping — ignore, not a game-ready signal
+					// Title screen ping -> ignore, not a game-ready signal
 				} else if (msg >= 1 && msg <= 3) {
 					remote_input = msg;
 				}
@@ -331,7 +332,7 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 
 		if (is_multiplayer) {
 			// Master keeps sending ball direction until ball starts,
-			// so slave picks it up even if it enters the round late
+			// So slave picks it up even if it enters the round late
 			if (is_master && !self->isRunning) {
 				lc_send(conn, MSG_DIR | (u16)(self->ball->dir & MASK_DIR));
 				round_synced = true;
@@ -355,7 +356,7 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 
 		// --- Ball physics: master only ---
 		// Master runs Ball_moveAndCollide and broadcasts the result.
-		// Slave detects scoring from ball position — no MSG_STATUS needed.
+		// Slave detects scoring from ball position -> no MSG_STATUS needed.
 		if (self->isRunning && is_master) {
 			status = Ball_moveAndCollide(self);
 			if (is_multiplayer) {
@@ -395,15 +396,16 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 }
 
 void _renderGame(Game *self, LinkConnection *conn) {
-    Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, LINE_COLOR);  // middle line
+    Draw_line(SCREEN_HEIGHT-2, SCREEN_WIDTH/2, 1, SCREEN_WIDTH/2, LINE_COLOR);  // Middle line
     Game_renderBall(self->ball);
     Game_renderPlayer(self->p1);
     Game_renderPlayer(self->p2);
-    Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH, BORDER_COLOR); // grey border around the screen
+    Draw_rectXYHW(0, 0, SCREEN_HEIGHT - 1, SCREEN_WIDTH, BORDER_COLOR); // Grey border around the screen
     _draw_link_indicator(conn);
 }
 
-// Only called in solo mode — multiplayer P2 movement is handled in _runGame
+// Only called in solo mode (and after a disconnect)
+// Multiplayer P2 movement is currently handled in _runGame
 void _ai_decision(Game *self, int *last_enemy_move, int correct_move_chance) {
 	if (correct_move_chance) {
 		if (self->p2->x + self->p2->h/2 < self->ball->x + self->ball->h/2 - AI_DEADZONE) {
