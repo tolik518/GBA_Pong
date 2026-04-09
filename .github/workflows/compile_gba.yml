@@ -6,6 +6,8 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: build docker image
         run: make build_image
