@@ -35,7 +35,6 @@
 // --- Link message payload masks ---
 #define MASK_BALL_X  0x7FFF
 #define MASK_BALL_Y  0x3FFF
-#define MASK_DIR     0x000F
 
 // --- Round-end status codes (from Ball_moveAndCollide) ---
 #define STATUS_NONE     0
@@ -71,8 +70,8 @@
 // --- Ball defaults ---
 #define BALL_SIZE      7
 #define BALL_COLOR     27
-#define BALL_SPEED_X   1
-#define BALL_SPEED_Y   2
+#define BALL_INIT_DX   1
+#define BALL_SPEED_H   2
 
 // --- AI ---
 #define AI_DEADZONE        5
@@ -82,13 +81,12 @@
 #define LINE_COLOR    24
 #define BORDER_COLOR  24
 
-void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNuber, LinkConnection *conn);
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection *conn);
 void _move_paddle_to(int direction, Paddle *paddle);
 void _ai_decision(Game *self, int *last_enemy_move, int correct_move_chance);
 void _renderGame(Game *self, LinkConnection *conn);
 
 static bool _link_connected = false;
-static int _link_check_timer = 0;
 
 static void _draw_link_indicator(LinkConnection *conn)
 {
@@ -195,6 +193,7 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 {
 	int scoreP1 = 0;
 	int scoreP2 = 0;
+	int lastLoser = 0; // 0 = game start (P1 serves), STATUS_P1_LOST or STATUS_P2_LOST
 
 	// main loop
 	while(true)
@@ -223,20 +222,24 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 			score: scoreP2
 		};
 
-		// Randomized direction
-		#pragma GCC diagnostic ignored "-Wuninitialized"
-		int randDir = (((*frame) + randDir) % 4);
+		// Ball spawns in front of the serving player's paddle
+		// Game start or P2 lost → P1 serves (ball goes right)
+		// P1 lost → P2 serves (ball goes left)
+		bool p2_serves = (lastLoser == STATUS_P1_LOST);
+		int ball_start_y = p2_serves
+			? (_p2.y - BALL_SIZE / 2 - 1)
+			: (_p1.y + _p1.w + BALL_SIZE / 2 + 1);
 
 		Ball _ball = {
 			x: SCREEN_HEIGHT/2 - 1,
-			y: SCREEN_WIDTH/2 - 1,
+			y: ball_start_y,
 			prev_x: SCREEN_HEIGHT/2,
-			prev_y: SCREEN_WIDTH/2,
+			prev_y: ball_start_y,
 			h: BALL_SIZE,
-			dir: randDir,
+			dx: BALL_INIT_DX,
+			dy: p2_serves ? -BALL_SPEED_H : BALL_SPEED_H,
+			hits: 0,
 			color: BALL_COLOR,
-			speedX: BALL_SPEED_X,
-			speedY: BALL_SPEED_Y
 		};
 
 		Game _game = {
@@ -248,11 +251,16 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 
 		Game *self = &_game;
 
-		_runGame(self, frame, &scoreP1, &scoreP2, randDir, conn);
+		int prevScoreP1 = scoreP1;
+
+		_runGame(self, frame, &scoreP1, &scoreP2, conn);
+
+		// The player whose opponent scored is the loser → they serve next
+		lastLoser = (scoreP1 > prevScoreP1) ? STATUS_P2_LOST : STATUS_P1_LOST;
 	}
 }
 
-void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNuber, LinkConnection *conn)
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection *conn)
 {
 	int status = 0;
 	int last_enemy_move = IDLE;
@@ -261,6 +269,10 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 	bool round_synced = !is_multiplayer;
 	// In multiplayer, track whether the remote player is in the game
 	bool remote_ready = !is_multiplayer;
+	// Wait for the local player to press A before launching the ball
+	bool local_ready = false;
+	// Pause state (solo only)
+	bool paused = false;
 
 	// Drain any leftover messages from the previous round
 	if (is_multiplayer) {
@@ -274,6 +286,22 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 	{
 		VBlankIntrWait();
 		key_poll();
+
+		// --- Pause toggle (solo mode only, only while ball is running) ---
+		if (!is_multiplayer && self->isRunning && key_hit(KEY_START)) {
+			paused = !paused;
+			if (paused) {
+				Game_showPausedText();
+			} else {
+				Game_removePauseText();
+			}
+		}
+
+		// While paused, skip all game logic
+		if (paused) {
+			(*frame)++;
+			continue;
+		}
 
 		Game_updateScore(self->p1, self->p2);
 
@@ -298,7 +326,8 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 					if (!is_master) self->ball->y = (int)(msg & MASK_BALL_Y);
 				} else if (msg & MSG_DIR) {
 					if (!is_master && !round_synced) {
-						self->ball->dir = (int)(msg & MASK_DIR);
+						self->ball->dx = (int)(((msg >> 4) & 0x0F)) - 4;
+						self->ball->dy = (int)((msg & 0x0F)) - 4;
 						round_synced = true;
 					}
 				} else if (msg & MSG_READY) {
@@ -315,18 +344,28 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 		Paddle *local_paddle  = is_master ? self->p1 : self->p2;
 		Paddle *remote_paddle = is_master ? self->p2 : self->p1;
 
+		// --- Check for A press to launch ball ---
+		if (!local_ready && key_is_down(KEY_A)) {
+			local_ready = true;
+		}
+
 		// --- Move local player ---
 		int move_dir = IDLE;
+		bool sprinting = key_is_down(KEY_B);
 		if (key_is_down(KEY_DOWN)) {
 			if (NO_COLLISION_BOTTOM(local_paddle)) {
 				move_dir = BOTTOM;
 				_move_paddle_to(BOTTOM, local_paddle);
+				if (sprinting && NO_COLLISION_BOTTOM(local_paddle))
+					_move_paddle_to(BOTTOM, local_paddle);
 			}
 		}
 		if (key_is_down(KEY_UP)) {
 			if (NO_COLLISION_TOP(local_paddle)) {
 				move_dir = TOP;
 				_move_paddle_to(TOP, local_paddle);
+				if (sprinting && NO_COLLISION_TOP(local_paddle))
+					_move_paddle_to(TOP, local_paddle);
 			}
 		}
 
@@ -334,11 +373,11 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 			// Master keeps sending ball direction until ball starts,
 			// So slave picks it up even if it enters the round late
 			if (is_master && !self->isRunning) {
-				lc_send(conn, MSG_DIR | (u16)(self->ball->dir & MASK_DIR));
+				lc_send(conn, MSG_DIR | (u16)((((self->ball->dx + 4) & 0x0F) << 4) | ((self->ball->dy + 4) & 0x0F)));
 				round_synced = true;
 			}
 			// Keep signaling ready until ball actually starts
-			if (!self->isRunning)
+			if (!self->isRunning && local_ready)
 				lc_send(conn, MSG_READY);
 			lc_send(conn, move_dir);
 		}
@@ -354,9 +393,18 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 			_ai_decision(self, &last_enemy_move, (*frame % AI_CORRECT_PERIOD) < 1);
 		}
 
+		// --- Before launch: ball follows the serving paddle vertically ---
+		if (!self->isRunning) {
+			// Determine which paddle is serving
+			Paddle *serve_paddle = (self->ball->dy > 0) ? self->p1 : self->p2;
+			self->ball->x = serve_paddle->x + serve_paddle->h / 2;
+			// Broadcast ball position to slave during pre-launch too
+			if (is_multiplayer && is_master) {
+				lc_send(conn, MSG_BALL_X | (u16)self->ball->x);
+			}
+		}
+
 		// --- Ball physics: master only ---
-		// Master runs Ball_moveAndCollide and broadcasts the result.
-		// Slave detects scoring from ball position -> no MSG_STATUS needed.
 		if (self->isRunning && is_master) {
 			status = Ball_moveAndCollide(self);
 			if (is_multiplayer) {
@@ -368,19 +416,28 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 		// Slave: detect scoring from the ball position received from master
 		if (self->isRunning && !is_master && is_multiplayer) {
 			if (self->ball->y - (self->ball->h / 2) <= 0)
-			status = STATUS_P1_LOST;
-		if (self->ball->y + (self->ball->h / 2) >= SCREEN_WIDTH - 1)
-			status = STATUS_P2_LOST;
+				status = STATUS_P1_LOST;
+			if (self->ball->y + (self->ball->h / 2) >= SCREEN_WIDTH - 1)
+				status = STATUS_P2_LOST;
 		}
 
 		_renderGame(self, conn);
 
+		// Show "PRESS A" prompt while waiting to launch
+		if (!self->isRunning) {
+			Game_setPauseText();
+		}
+
 		// Start the ball:
-		// Solo: immediately on first frame
-		// Multiplayer: wait until both players are in the game
+		// Solo: when A is pressed
+		// Multiplayer: when both players pressed A and round is synced
 		if (!self->isRunning)
 		{
-			if (!is_multiplayer || (round_synced && remote_ready)) {
+			bool ready = local_ready;
+			if (is_multiplayer)
+				ready = local_ready && round_synced && remote_ready;
+			if (ready) {
+				Game_removePauseText();
 				mmEffect(SFX_LOST);
 				self->isRunning = true;
 			}

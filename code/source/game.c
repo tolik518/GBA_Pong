@@ -70,15 +70,25 @@ void Game_setPauseText()
 	(void) initializeScoreWriter();
 
 	//show text centered on the screen
-	tte_set_pos((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-6);
-	tte_erase_rect((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+30, (SCREEN_HEIGHT/2)+6);
+	tte_set_pos((SCREEN_WIDTH/2)-24, (SCREEN_HEIGHT/2)-6);
+	tte_erase_rect((SCREEN_WIDTH/2)-24, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+24, (SCREEN_HEIGHT/2)+6);
 
-	tte_write("PRESS START");
+	tte_write("PRESS A");
 }
 
 void Game_removePauseText()
 {
 	tte_erase_rect((SCREEN_WIDTH/2)-40, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+40, (SCREEN_HEIGHT/2)+6);
+}
+
+void Game_showPausedText()
+{
+	(void) initializeScoreWriter();
+
+	tte_set_pos((SCREEN_WIDTH/2)-22, (SCREEN_HEIGHT/2)-6);
+	tte_erase_rect((SCREEN_WIDTH/2)-22, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+22, (SCREEN_HEIGHT/2)+6);
+
+	tte_write("PAUSED");
 }
 
 void Game_gameLoop(LinkConnection *conn)
