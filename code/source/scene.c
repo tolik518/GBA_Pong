@@ -81,7 +81,7 @@
 #define LINE_COLOR    24
 #define BORDER_COLOR  24
 
-void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNuber, LinkConnection *conn);
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection *conn);
 void _move_paddle_to(int direction, Paddle *paddle);
 void _ai_decision(Game *self, int *last_enemy_move, int correct_move_chance);
 void _renderGame(Game *self, LinkConnection *conn);
@@ -194,6 +194,7 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 {
 	int scoreP1 = 0;
 	int scoreP2 = 0;
+	int lastLoser = 0; // 0 = game start (P1 serves), STATUS_P1_LOST or STATUS_P2_LOST
 
 	// main loop
 	while(true)
@@ -222,18 +223,22 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 			score: scoreP2
 		};
 
-		// Randomized direction
-		#pragma GCC diagnostic ignored "-Wuninitialized"
-		int randDir = (((*frame) + randDir) % 4);
+		// Ball spawns in front of the serving player's paddle
+		// Game start or P2 lost → P1 serves (ball goes right)
+		// P1 lost → P2 serves (ball goes left)
+		bool p2_serves = (lastLoser == STATUS_P1_LOST);
+		int ball_start_y = p2_serves
+			? (_p2.y - BALL_SIZE / 2 - 1)
+			: (_p1.y + _p1.w + BALL_SIZE / 2 + 1);
 
 		Ball _ball = {
 			x: SCREEN_HEIGHT/2 - 1,
-			y: SCREEN_WIDTH/2 - 1,
+			y: ball_start_y,
 			prev_x: SCREEN_HEIGHT/2,
-			prev_y: SCREEN_WIDTH/2,
+			prev_y: ball_start_y,
 			h: BALL_SIZE,
-			dx: (randDir & 2) ? BALL_INIT_DX : -BALL_INIT_DX,
-			dy: (randDir & 1) ? BALL_SPEED_H : -BALL_SPEED_H,
+			dx: BALL_INIT_DX,
+			dy: p2_serves ? -BALL_SPEED_H : BALL_SPEED_H,
 			color: BALL_COLOR,
 		};
 
@@ -246,11 +251,16 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 
 		Game *self = &_game;
 
-		_runGame(self, frame, &scoreP1, &scoreP2, randDir, conn);
+		int prevScoreP1 = scoreP1;
+
+		_runGame(self, frame, &scoreP1, &scoreP2, conn);
+
+		// The player whose opponent scored is the loser → they serve next
+		lastLoser = (scoreP1 > prevScoreP1) ? STATUS_P2_LOST : STATUS_P1_LOST;
 	}
 }
 
-void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNuber, LinkConnection *conn)
+void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection *conn)
 {
 	int status = 0;
 	int last_enemy_move = IDLE;
