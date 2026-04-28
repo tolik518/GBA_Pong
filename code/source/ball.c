@@ -56,6 +56,19 @@ static void _adjustBounceAngle(Ball *self, Paddle *paddle)
 	self->dx = offset * BALL_MAX_DX / half_h;
 }
 
+// After a paddle hit, increment hit counter and speed up if interval reached
+static void _maybeSpeedUp(Ball *self)
+{
+	self->hits++;
+	if (self->hits % BALL_SPEEDUP_INTERVAL == 0) {
+		int sign = (self->dy > 0) ? 1 : -1;
+		int speed = (self->dy > 0) ? self->dy : -self->dy;
+		if (speed < BALL_MAX_DY) {
+			self->dy = sign * (speed + 1);
+		}
+	}
+}
+
 //return 1 = left player lost
 //return 2 = right player lost
 int Ball_moveAndCollide(Game *game)
@@ -93,6 +106,7 @@ int Ball_moveAndCollide(Game *game)
 			self->y = front + self->h / 2;
 			_adjustBounceAngle(self, game->p1);
 			self->dy = -self->dy;
+			_maybeSpeedUp(self);
 			mmEffect(SFX_CLICK);
 		} else if (BALL_COLLISION_LEFT) {
 			return 1;
@@ -110,6 +124,7 @@ int Ball_moveAndCollide(Game *game)
 			self->y = front - self->h / 2;
 			_adjustBounceAngle(self, game->p2);
 			self->dy = -self->dy;
+			_maybeSpeedUp(self);
 			mmEffect(SFX_CLICK);
 		} else if (BALL_COLLISION_RIGHT) {
 			return 2;

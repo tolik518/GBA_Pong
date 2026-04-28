@@ -7,6 +7,10 @@ typedef struct game Game;
 // Maximum vertical speed the ball can reach after a paddle bounce
 #define BALL_MAX_DX  3
 
+// Ball speeds up every BALL_SPEEDUP_INTERVAL paddle hits
+#define BALL_SPEEDUP_INTERVAL  4
+#define BALL_MAX_DY            4
+
 typedef struct ball
 {
     int    x;
@@ -16,6 +20,7 @@ typedef struct ball
     int    h;   //height
     int    dx;  // vertical velocity (positive = down, negative = up)
     int    dy;  // horizontal velocity (positive = right, negative = left)
+    int    hits; // paddle hit counter for speed-up
     COLOR  color;
 } Ball;
 

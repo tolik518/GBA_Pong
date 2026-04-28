@@ -238,6 +238,7 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 			h: BALL_SIZE,
 			dx: BALL_INIT_DX,
 			dy: p2_serves ? -BALL_SPEED_H : BALL_SPEED_H,
+			hits: 0,
 			color: BALL_COLOR,
 		};
 
@@ -350,16 +351,21 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 
 		// --- Move local player ---
 		int move_dir = IDLE;
+		bool sprinting = key_is_down(KEY_B);
 		if (key_is_down(KEY_DOWN)) {
 			if (NO_COLLISION_BOTTOM(local_paddle)) {
 				move_dir = BOTTOM;
 				_move_paddle_to(BOTTOM, local_paddle);
+				if (sprinting && NO_COLLISION_BOTTOM(local_paddle))
+					_move_paddle_to(BOTTOM, local_paddle);
 			}
 		}
 		if (key_is_down(KEY_UP)) {
 			if (NO_COLLISION_TOP(local_paddle)) {
 				move_dir = TOP;
 				_move_paddle_to(TOP, local_paddle);
+				if (sprinting && NO_COLLISION_TOP(local_paddle))
+					_move_paddle_to(TOP, local_paddle);
 			}
 		}
 
