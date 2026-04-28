@@ -269,6 +269,8 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 	bool round_synced = !is_multiplayer;
 	// In multiplayer, track whether the remote player is in the game
 	bool remote_ready = !is_multiplayer;
+	// Wait for the local player to press A before launching the ball
+	bool local_ready = false;
 
 	// Drain any leftover messages from the previous round
 	if (is_multiplayer) {
@@ -324,6 +326,11 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 		Paddle *local_paddle  = is_master ? self->p1 : self->p2;
 		Paddle *remote_paddle = is_master ? self->p2 : self->p1;
 
+		// --- Check for A press to launch ball ---
+		if (!local_ready && key_is_down(KEY_A)) {
+			local_ready = true;
+		}
+
 		// --- Move local player ---
 		int move_dir = IDLE;
 		if (key_is_down(KEY_DOWN)) {
@@ -347,7 +354,7 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 				round_synced = true;
 			}
 			// Keep signaling ready until ball actually starts
-			if (!self->isRunning)
+			if (!self->isRunning && local_ready)
 				lc_send(conn, MSG_READY);
 			lc_send(conn, move_dir);
 		}
@@ -363,9 +370,14 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 			_ai_decision(self, &last_enemy_move, (*frame % AI_CORRECT_PERIOD) < 1);
 		}
 
+		// --- Before launch: ball follows the serving paddle vertically ---
+		if (!self->isRunning) {
+			// Determine which paddle is serving
+			Paddle *serve_paddle = (self->ball->dy > 0) ? self->p1 : self->p2;
+			self->ball->x = serve_paddle->x + serve_paddle->h / 2;
+		}
+
 		// --- Ball physics: master only ---
-		// Master runs Ball_moveAndCollide and broadcasts the result.
-		// Slave detects scoring from ball position -> no MSG_STATUS needed.
 		if (self->isRunning && is_master) {
 			status = Ball_moveAndCollide(self);
 			if (is_multiplayer) {
@@ -384,12 +396,21 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 
 		_renderGame(self, conn);
 
+		// Show "PRESS A" prompt while waiting to launch
+		if (!self->isRunning) {
+			Game_setPauseText();
+		}
+
 		// Start the ball:
-		// Solo: immediately on first frame
-		// Multiplayer: wait until both players are in the game
+		// Solo: when A is pressed
+		// Multiplayer: when both players pressed A and round is synced
 		if (!self->isRunning)
 		{
-			if (!is_multiplayer || (round_synced && remote_ready)) {
+			bool ready = local_ready;
+			if (is_multiplayer)
+				ready = local_ready && round_synced && remote_ready;
+			if (ready) {
+				Game_removePauseText();
 				mmEffect(SFX_LOST);
 				self->isRunning = true;
 			}

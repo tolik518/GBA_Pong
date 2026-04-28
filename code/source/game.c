@@ -70,10 +70,10 @@ void Game_setPauseText()
 	(void) initializeScoreWriter();
 
 	//show text centered on the screen
-	tte_set_pos((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-6);
-	tte_erase_rect((SCREEN_WIDTH/2)-30, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+30, (SCREEN_HEIGHT/2)+6);
+	tte_set_pos((SCREEN_WIDTH/2)-24, (SCREEN_HEIGHT/2)-6);
+	tte_erase_rect((SCREEN_WIDTH/2)-24, (SCREEN_HEIGHT/2)-5, (SCREEN_WIDTH/2)+24, (SCREEN_HEIGHT/2)+6);
 
-	tte_write("PRESS START");
+	tte_write("PRESS A");
 }
 
 void Game_removePauseText()
