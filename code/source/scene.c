@@ -87,7 +87,6 @@ void _ai_decision(Game *self, int *last_enemy_move, int correct_move_chance);
 void _renderGame(Game *self, LinkConnection *conn);
 
 static bool _link_connected = false;
-static int _link_check_timer = 0;
 
 static void _draw_link_indicator(LinkConnection *conn)
 {
@@ -271,6 +270,8 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 	bool remote_ready = !is_multiplayer;
 	// Wait for the local player to press A before launching the ball
 	bool local_ready = false;
+	// Pause state (solo only)
+	bool paused = false;
 
 	// Drain any leftover messages from the previous round
 	if (is_multiplayer) {
@@ -284,6 +285,22 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 	{
 		VBlankIntrWait();
 		key_poll();
+
+		// --- Pause toggle (solo mode only, only while ball is running) ---
+		if (!is_multiplayer && self->isRunning && key_hit(KEY_START)) {
+			paused = !paused;
+			if (paused) {
+				Game_showPausedText();
+			} else {
+				Game_removePauseText();
+			}
+		}
+
+		// While paused, skip all game logic
+		if (paused) {
+			(*frame)++;
+			continue;
+		}
 
 		Game_updateScore(self->p1, self->p2);
 
@@ -375,6 +392,10 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 			// Determine which paddle is serving
 			Paddle *serve_paddle = (self->ball->dy > 0) ? self->p1 : self->p2;
 			self->ball->x = serve_paddle->x + serve_paddle->h / 2;
+			// Broadcast ball position to slave during pre-launch too
+			if (is_multiplayer && is_master) {
+				lc_send(conn, MSG_BALL_X | (u16)self->ball->x);
+			}
 		}
 
 		// --- Ball physics: master only ---
@@ -389,9 +410,9 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, LinkConnection
 		// Slave: detect scoring from the ball position received from master
 		if (self->isRunning && !is_master && is_multiplayer) {
 			if (self->ball->y - (self->ball->h / 2) <= 0)
-			status = STATUS_P1_LOST;
-		if (self->ball->y + (self->ball->h / 2) >= SCREEN_WIDTH - 1)
-			status = STATUS_P2_LOST;
+				status = STATUS_P1_LOST;
+			if (self->ball->y + (self->ball->h / 2) >= SCREEN_WIDTH - 1)
+				status = STATUS_P2_LOST;
 		}
 
 		_renderGame(self, conn);

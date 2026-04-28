@@ -26,6 +26,7 @@ void Game_renderBall(Ball *ball);
 void Game_updateScore(const Paddle *p1, const Paddle *p2);
 void Game_removePauseText();
 void Game_setPauseText();
+void Game_showPausedText();
 
 
 #endif

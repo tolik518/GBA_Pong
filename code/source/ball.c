@@ -61,6 +61,7 @@ static void _adjustBounceAngle(Ball *self, Paddle *paddle)
 int Ball_moveAndCollide(Game *game)
 {
 	Ball *self = game->ball;
+	int prev_y = self->y;
 
 	// Apply velocity
 	self->x += self->dx;
@@ -78,9 +79,18 @@ int Ball_moveAndCollide(Game *game)
 	}
 
 	// Paddle collision / scoring (horizontal axis)
+	// Use swept check: did the ball's leading edge cross the paddle front this frame?
 	if (self->dy < 0) {
 		// Moving left -> check P1 paddle
-		if (checkCollisionWithPaddle(self, game->p1)) {
+		int front = game->p1->y + game->p1->w;
+		int ball_left_prev = prev_y - (self->h / 2);
+		int ball_left_now  = BALL_POSITION_LEFT;
+		// Ball crossed (or touched) the paddle's right edge this frame
+		if (ball_left_now <= front && ball_left_prev >= front &&
+			BALL_POSITION_BOTTOM > game->p1->x &&
+			BALL_POSITION_TOP < (game->p1->x + game->p1->h)) {
+			// Snap ball to paddle surface to prevent overlap
+			self->y = front + self->h / 2;
 			_adjustBounceAngle(self, game->p1);
 			self->dy = -self->dy;
 			mmEffect(SFX_CLICK);
@@ -89,7 +99,15 @@ int Ball_moveAndCollide(Game *game)
 		}
 	} else {
 		// Moving right -> check P2 paddle
-		if (checkCollisionWithPaddle(self, game->p2)) {
+		int front = game->p2->y;
+		int ball_right_prev = prev_y + (self->h / 2);
+		int ball_right_now  = BALL_POSITION_RIGHT;
+		// Ball crossed (or touched) the paddle's left edge this frame
+		if (ball_right_now >= front && ball_right_prev <= front &&
+			BALL_POSITION_BOTTOM > (game->p2->x) &&
+			BALL_POSITION_TOP < (game->p2->x + game->p2->h)) {
+			// Snap ball to paddle surface to prevent overlap
+			self->y = front - self->h / 2;
 			_adjustBounceAngle(self, game->p2);
 			self->dy = -self->dy;
 			mmEffect(SFX_CLICK);
