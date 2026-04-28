@@ -6,7 +6,7 @@
 #include <../build/soundbank.h>
 #include <../build/soundbank_bin.h>
 
-// Collisions of the wall and the walls
+// Collisions of the ball and the walls
 #define BALL_COLLISION_TOP     self->x - (self->h / 2) <= 0
 #define BALL_COLLISION_LEFT    self->y - (self->h / 2) <= 0
 #define BALL_COLLISION_RIGHT   self->y + (self->h / 2) >= SCREEN_WIDTH  - 1
@@ -43,122 +43,60 @@ bool checkCollisionWithPaddle(const Ball *self,  Paddle *player)
     return true;
 }
 
+// Adjust vertical speed (dx) based on where the ball hit the paddle.
+// Hitting the center returns the ball nearly horizontal;
+// hitting the edges gives a steeper angle.
+static void _adjustBounceAngle(Ball *self, Paddle *paddle)
+{
+	int ball_center   = self->x;
+	int paddle_center = paddle->x + paddle->h / 2;
+	int offset        = ball_center - paddle_center;
+	int half_h        = paddle->h / 2;
+
+	self->dx = offset * BALL_MAX_DX / half_h;
+}
+
 //return 1 = left player lost
 //return 2 = right player lost
-static int moveTopLeft(Ball *self, Paddle *player)
-{
-    self->x -= self->speedX;
-    self->y -= self->speedY;
-
-    if (BALL_COLLISION_TOP) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_BOTTOMLEFT;
-        return 0;
-    }
-
-    if (checkCollisionWithPaddle(self, player)) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_TOPRIGHT;
-        return 0;
-    }
-
-    if (BALL_COLLISION_LEFT) {
-        return 1;
-    }
-
-    return 0;
-}
-
-static int moveBottomLeft(Ball *self, Paddle *player)
-{
-    self->x += self->speedX;
-    self->y -= self->speedY;
-
-    if (BALL_COLLISION_BOTTOM) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_TOPLEFT;
-        return 0;
-    }
-
-    if (checkCollisionWithPaddle(self, player)) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_BOTTOMRIGHT;
-        return 0;
-    }
-
-    if (BALL_COLLISION_LEFT) {
-        return 1;
-    }
-
-    return 0;
-}
-
-static int moveBottomRight(Ball *self, Paddle *player)
-{
-    self->x += self->speedX;
-    self->y += self->speedY;
-
-    if (BALL_COLLISION_BOTTOM) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_TOPRIGHT;
-        return 0;
-    }
-
-    if (checkCollisionWithPaddle(self, player)) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_BOTTOMLEFT;
-        return 0;
-    }
-
-    if (BALL_COLLISION_RIGHT) {
-        return 2;
-    }
-    return 0;
-}
-
-static int moveTopRight(Ball *self, Paddle *player)
-{
-    self->x -= self->speedX;
-    self->y += self->speedY;
-
-    if (BALL_COLLISION_TOP) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_BOTTOMRIGHT;
-        return 0;
-    }
-
-    if (checkCollisionWithPaddle(self, player)) {
-        mmEffect( SFX_CLICK );
-        self->dir = BALL_MOVES_TOPLEFT;
-        return 0;
-    }
-
-    if (BALL_COLLISION_RIGHT) {
-        return 2;
-    }
-
-    return 0;
-}
-
-//game->ball, game->p1, game->p2
-//int Ball_moveAndCollide(Ball *self, Paddle *p1, Paddle *p2)
 int Ball_moveAndCollide(Game *game)
 {
-    Ball *self = game->ball;
-    switch (game->ball->dir)
-    {
-        case BALL_MOVES_TOPLEFT:
-            return moveTopLeft(self, game->p1);
+	Ball *self = game->ball;
 
-        case BALL_MOVES_BOTTOMLEFT:
-            return moveBottomLeft(self, game->p1);
+	// Apply velocity
+	self->x += self->dx;
+	self->y += self->dy;
 
-        case BALL_MOVES_BOTTOMRIGHT:
-            return moveBottomRight(self, game->p2);
+	// Top/bottom wall bounce (flip vertical component)
+	if (BALL_COLLISION_TOP) {
+		self->x = self->h / 2;
+		self->dx = -self->dx;
+		mmEffect(SFX_CLICK);
+	} else if (BALL_COLLISION_BOTTOM) {
+		self->x = SCREEN_HEIGHT - 1 - self->h / 2;
+		self->dx = -self->dx;
+		mmEffect(SFX_CLICK);
+	}
 
-        case BALL_MOVES_TOPRIGHT:
-            return moveTopRight(self, game->p2);
-    }
+	// Paddle collision / scoring (horizontal axis)
+	if (self->dy < 0) {
+		// Moving left -> check P1 paddle
+		if (checkCollisionWithPaddle(self, game->p1)) {
+			_adjustBounceAngle(self, game->p1);
+			self->dy = -self->dy;
+			mmEffect(SFX_CLICK);
+		} else if (BALL_COLLISION_LEFT) {
+			return 1;
+		}
+	} else {
+		// Moving right -> check P2 paddle
+		if (checkCollisionWithPaddle(self, game->p2)) {
+			_adjustBounceAngle(self, game->p2);
+			self->dy = -self->dy;
+			mmEffect(SFX_CLICK);
+		} else if (BALL_COLLISION_RIGHT) {
+			return 2;
+		}
+	}
 
     return 0;
 }

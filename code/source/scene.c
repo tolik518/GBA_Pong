@@ -35,7 +35,6 @@
 // --- Link message payload masks ---
 #define MASK_BALL_X  0x7FFF
 #define MASK_BALL_Y  0x3FFF
-#define MASK_DIR     0x000F
 
 // --- Round-end status codes (from Ball_moveAndCollide) ---
 #define STATUS_NONE     0
@@ -71,8 +70,8 @@
 // --- Ball defaults ---
 #define BALL_SIZE      7
 #define BALL_COLOR     27
-#define BALL_SPEED_X   1
-#define BALL_SPEED_Y   2
+#define BALL_INIT_DX   1
+#define BALL_SPEED_H   2
 
 // --- AI ---
 #define AI_DEADZONE        5
@@ -233,10 +232,9 @@ void Scene_showGamescreen(int *frame, LinkConnection *conn)
 			prev_x: SCREEN_HEIGHT/2,
 			prev_y: SCREEN_WIDTH/2,
 			h: BALL_SIZE,
-			dir: randDir,
+			dx: (randDir & 2) ? BALL_INIT_DX : -BALL_INIT_DX,
+			dy: (randDir & 1) ? BALL_SPEED_H : -BALL_SPEED_H,
 			color: BALL_COLOR,
-			speedX: BALL_SPEED_X,
-			speedY: BALL_SPEED_Y
 		};
 
 		Game _game = {
@@ -298,7 +296,8 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 					if (!is_master) self->ball->y = (int)(msg & MASK_BALL_Y);
 				} else if (msg & MSG_DIR) {
 					if (!is_master && !round_synced) {
-						self->ball->dir = (int)(msg & MASK_DIR);
+						self->ball->dx = (int)(((msg >> 4) & 0x0F)) - 4;
+						self->ball->dy = (int)((msg & 0x0F)) - 4;
 						round_synced = true;
 					}
 				} else if (msg & MSG_READY) {
@@ -334,7 +333,7 @@ void _runGame(Game *self, int *frame, int *scoreP1, int *scoreP2, int randomNube
 			// Master keeps sending ball direction until ball starts,
 			// So slave picks it up even if it enters the round late
 			if (is_master && !self->isRunning) {
-				lc_send(conn, MSG_DIR | (u16)(self->ball->dir & MASK_DIR));
+				lc_send(conn, MSG_DIR | (u16)((((self->ball->dx + 4) & 0x0F) << 4) | ((self->ball->dy + 4) & 0x0F)));
 				round_synced = true;
 			}
 			// Keep signaling ready until ball actually starts
